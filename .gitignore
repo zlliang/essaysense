@@ -2,6 +2,7 @@
 /references/
 /aes/datasets/training_set_rel3.tsv
 /aes/datasets/glove.6B.50d.txt
+/TODO.txt
 
 
 # Created by https://www.gitignore.io/api/macos,linux,windows,python

@@ -2,6 +2,7 @@
 
 from .asap import *
 from .glove import *
+from .preprocessing import *
 
 # def lookup(sequence):
 #     seq_mat = []
