@@ -13,6 +13,7 @@ class HyperParameters:
         self._w_convunits_size = 50
         self._s_convunits_size = 50
         self._hidden_size = 50
+        self._batch_size = 5
         self._learning_rate = 0.01
 
     @property
@@ -48,5 +49,11 @@ class HyperParameters:
         return self._hidden_size
 
     @property
+    def batch_size(self):
+        return self._batch_size
+
+    @property
     def learning_rate(self):
         return self._learning_rate
+
+hp = HyperParameters()

@@ -1,14 +1,11 @@
 """ASAP DATASETS. TODO"""
 
-from .asap import *
-from .glove import *
-from .preprocessing import *
+from .hyperparameters import hp
+from .util import TrainSet
+from .asap import load_asap
+from .glove import load_glove
 
-# def lookup(sequence):
-#     seq_mat = []
-#     for i in sequence:
-#         try:
-#             seq_mat.append(lookup_table[i])
-#         except KeyError:
-#             seq_mat.append(np.random.randn(DIM))
-#     return np.array(seq_mat)
+import numpy as np
+
+train_set = TrainSet(load_asap, load_glove)
+next_batch = train_set.next_batch

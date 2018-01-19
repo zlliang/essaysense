@@ -9,7 +9,7 @@ path_glove = os.path.join(os.path.dirname(__file__), 'glove.6B.50d.txt')
 
 def load_glove():
     """LOAD_GLOVE, TODO"""
-    # print("Loading: GloVe word vectors") TODO
+    # print("Loading: GloVe word vectors")  # TODO
     try:
         with codecs.open(path_glove, 'r', 'UTF-8') as glove_file:
             glove_vectors = {}
