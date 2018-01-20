@@ -28,18 +28,23 @@ def load_asap(path=path_asap, domain_id=None):
         # print("Downloading: ASAP dataset") # TODO
         # urllib.request.urlretrieve()
 
+class ASAPMetadata:
+    """METADATA of ASAP dataset. TODO"""
+    @property
+    def score_range(self):
+        return {"1": (2, 12),
+                "2": (1, 6),
+                "3": (0, 3),
+                "4": (0, 3),
+                "5": (0, 4),
+                "6": (0, 4),
+                "7": (0, 30),
+                "8": (0, 60)}
 
-score_range = {"1": (2, 12),
-               "2": (1, 6),
-               "3": (0, 3),
-               "4": (0, 3),
-               "5": (0, 4),
-               "6": (0, 4),
-               "7": (0, 30),
-               "8": (0, 60)}
+asap_metadata = ASAPMetadata()
 
 def normalize_score(domain_id, score):
     """TODO"""
-    lo, hi = score_range[domain_id]
+    lo, hi = asap_metadata.score_range[domain_id]
     score = float(score)
     return (score - lo) / (hi - lo)

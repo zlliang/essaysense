@@ -2,7 +2,6 @@ import numpy as np
 import nltk
 
 from .hyperparameters import hp
-from .asap import normalize_score
 
 class ASAPDataSet:
     """TODO"""
@@ -10,6 +9,22 @@ class ASAPDataSet:
         """TODO"""
         self.s_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
         self.lookup_table = lookup_table
+
+    @property
+    def score_range(self):
+        return {"1": (2, 12),
+                "2": (1, 6),
+                "3": (0, 3),
+                "4": (0, 3),
+                "5": (0, 4),
+                "6": (0, 4),
+                "7": (0, 30),
+                "8": (0, 60)}
+
+    def normalize_score(self, domain_id, score):
+        lo, hi = self.score_range[str(domain_id)]
+        score = float(score)
+        return (score - lo) / (hi - lo)
 
     def tokenize(self, essay_text):
         """TODO"""
@@ -36,6 +51,11 @@ class ASAPDataSet:
                 word = sentence[j]
                 embedded[i, j] = self.lookup(word)
         return embedded
+        
+class MetaData(ASAPDataSet):
+    """TODO"""
+    def __init__(self):
+        pass
 
 class TrainSet(ASAPDataSet):
     """TODO"""
@@ -53,8 +73,8 @@ class TrainSet(ASAPDataSet):
             item = raw_train_set[i]
             yield {"domain_id":    item["essay_set"],
                    "essay": self.embed_essay(item["essay"]),
-                   "score": normalize_score(item["essay_set"],
-                                            item["domain1_score"])}
+                   "score": self.normalize_score(item["essay_set"],
+                                                 item["domain1_score"])}
 
     def next_batch(self, size_demand):
         """TODO"""
@@ -81,8 +101,8 @@ class TestSet(ASAPDataSet):
         scores_all = []
         for item in self._raw_test_set:
             essays_all.append(self.embed_essay(item["essay"]))
-            scores_all.append(normalize_score(item["essay_set"],
-                                              item["domain1_score"]))
+            scores_all.append(self.normalize_score(item["essay_set"],
+                                                   item["domain1_score"]))
         essays_all = np.array(essays_all)
         scores_all = np.array(scores_all)
         return essays_all, scores_all

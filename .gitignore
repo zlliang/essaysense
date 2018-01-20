@@ -5,6 +5,7 @@
 /aes/datasets/train.tsv
 /aes/datasets/test.tsv
 /TODO.txt
+/archive/
 
 
 # Created by https://www.gitignore.io/api/macos,linux,windows,python

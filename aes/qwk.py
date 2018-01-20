@@ -2,15 +2,7 @@
 
 # TODO: This part references from Taghipour and Ng (2016) heavily. LICENSE???
 import numpy as np
-
-score_range = {"1": (2, 12),
-               "2": (1, 6),
-               "3": (0, 3),
-               "4": (0, 3),
-               "5": (0, 4),
-               "6": (0, 4),
-               "7": (0, 30),
-               "8": (0, 60)}
+from datasets import meta
 
 def int_scores(scores, lo, hi):
     """TODO"""
@@ -23,7 +15,7 @@ def qwk(scores_infer, scores_gold, domain_id):
         domain_id: domain的id，整数或者字符串都行
 
     """
-    lo, hi = score_range[str(domain_id)]
+    lo, hi = meta.score_range[str(domain_id)]
     num_scores = hi - lo + 1
     possible_scores = range(lo, hi+1)
     scores_infer = int_scores(scores_infer, lo, hi)

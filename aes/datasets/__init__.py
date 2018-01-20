@@ -4,8 +4,8 @@ import os
 from functools import partial
 
 from .hyperparameters import hp
-from .util import TrainSet, TestSet
-from .asap import load_asap
+from .util import TrainSet, TestSet, MetaData
+from .asap import load_asap, asap_metadata
 from .glove import load_glove
 
 import numpy as np
@@ -20,3 +20,4 @@ glove_table = load_glove()
 
 train_set = TrainSet(load_train_1, glove_table)
 test_set = TestSet(load_test_1, glove_table)
+meta = MetaData()
