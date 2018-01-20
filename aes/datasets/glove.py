@@ -5,9 +5,11 @@ import codecs
 
 import numpy as np
 
-path_glove = os.path.join(os.path.dirname(__file__), 'glove.6B.50d.txt')
+from ..configs import paths
 
-def load_glove():
+# path_glove = paths.glove_path
+
+def load_glove(path_glove=paths.glove_path):
     """LOAD_GLOVE, TODO"""
     # print("Loading: GloVe word vectors")  # TODO
     try:

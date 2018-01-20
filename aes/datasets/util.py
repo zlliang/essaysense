@@ -1,7 +1,7 @@
 import numpy as np
 import nltk
 
-from .hyperparameters import hp
+from ..configs import hp
 
 class ASAPDataSet:
     """TODO"""
@@ -51,7 +51,7 @@ class ASAPDataSet:
                 word = sentence[j]
                 embedded[i, j] = self.lookup(word)
         return embedded
-        
+
 class MetaData(ASAPDataSet):
     """TODO"""
     def __init__(self):

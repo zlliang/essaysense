@@ -3,9 +3,9 @@
 import os
 from functools import partial
 
-from .hyperparameters import hp
+from ..configs import hp
 from .util import TrainSet, TestSet, MetaData
-from .asap import load_asap, asap_metadata
+from .asap import load_asap
 from .glove import load_glove
 
 import numpy as np

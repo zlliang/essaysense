@@ -6,10 +6,13 @@ This module get the ASAP data prepared.
 import os
 import csv
 import codecs
-import urllib # TODO
+from urllib import request
 
-path_asap = os.path.join(os.path.dirname(__file__), "training_set_rel3.tsv")
-# url_asap =
+from ..configs import paths
+
+path_asap = paths.asap_path
+url_asap = "http://p2u3jfd2o.bkt.clouddn.com/training_set_rel3.tsv"
+
 set_valid = [str(i) for i in range(1, 9)]
 score_valid = [str(i) for i in range(0, 61)]
 def load_asap(path=path_asap, domain_id=None):
@@ -26,25 +29,5 @@ def load_asap(path=path_asap, domain_id=None):
     except:
         raise NotImplementedError
         # print("Downloading: ASAP dataset") # TODO
-        # urllib.request.urlretrieve()
-
-class ASAPMetadata:
-    """METADATA of ASAP dataset. TODO"""
-    @property
-    def score_range(self):
-        return {"1": (2, 12),
-                "2": (1, 6),
-                "3": (0, 3),
-                "4": (0, 3),
-                "5": (0, 4),
-                "6": (0, 4),
-                "7": (0, 30),
-                "8": (0, 60)}
-
-asap_metadata = ASAPMetadata()
-
-def normalize_score(domain_id, score):
-    """TODO"""
-    lo, hi = asap_metadata.score_range[domain_id]
-    score = float(score)
-    return (score - lo) / (hi - lo)
+        request.urlretrieve(url_asap, path_asap)
+        load_asap()

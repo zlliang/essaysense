@@ -5,6 +5,8 @@
 TODO
 """
 import argparse
-import aes
 
-# aes.main()
+
+import aes.models
+
+aes.models.main()
