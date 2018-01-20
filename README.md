@@ -2,9 +2,10 @@
 
 Here is our Automatic Essay Scoring project.
 
-<!-- # Usage
+# Requirements
 
-## Requirements
+Python 3.5+ and TensorFlow 1.4.1+ are required to run this project. You can install all the dependencies by `pip3 install -r requirements.txt`
 
-- Python 3.5+
-- TensorFlow 1.4.1+ -->
+# Usage
+
+For now, an initial version of CNN for the AES task has been implemented. To train the model, just run the file `aes-cli`.
