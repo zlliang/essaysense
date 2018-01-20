@@ -4,17 +4,20 @@ class HyperParameters:
     s for sentences
     e for essay
     """
+
     def __init__(self):
         self._w_dim = 50
         self._s_len = 20
         self._e_len = 60
         self._w_window_len = 5
-        self._s_windows_len = 3
+        self._s_window_len = 3
         self._w_convunits_size = 50
         self._s_convunits_size = 50
         self._hidden_size = 50
         self._batch_size = 5
         self._learning_rate = 0.01
+        self._stddev = 0.1
+        self._dropout_keep_prob = 0.5
 
     @property
     def w_dim(self):
@@ -55,5 +58,14 @@ class HyperParameters:
     @property
     def learning_rate(self):
         return self._learning_rate
+
+    @property
+    def stddev(self):
+        return self._stddev
+
+    @property
+    def dropout_keep_prob(self):
+        return self._dropout_keep_prob
+
 
 hp = HyperParameters()

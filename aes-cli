@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Command Line Interface of AES project.
 
 TODO
@@ -5,4 +7,4 @@ TODO
 import argparse
 import aes
 
-aes.main()
+# aes.main()

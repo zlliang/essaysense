@@ -16,7 +16,7 @@ subpackages
     - datasets: datasets used in this project.
 """
 
-__version__ = '0.0.1'
+__version__ = "0.0.1"
 
 from . import datasets
-from .models import *
+# from .models import *

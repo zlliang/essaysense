@@ -4,13 +4,12 @@ import nltk
 from .hyperparameters import hp
 from .asap import normalize_score
 
-class TrainSet:
+class ASAPDataSet:
     """TODO"""
-    def __init__(self, load_train_set, load_lookup_table):
+    def __init__(self, lookup_table):
         """TODO"""
         self.s_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-        self.lookup_table =  load_lookup_table()
-        self.train_set_generator = self.structure(load_train_set())
+        self.lookup_table = lookup_table
 
     def tokenize(self, essay_text):
         """TODO"""
@@ -38,6 +37,13 @@ class TrainSet:
                 embedded[i, j] = self.lookup(word)
         return embedded
 
+class TrainSet(ASAPDataSet):
+    """TODO"""
+    def __init__(self, load_train_set, lookup_table):
+        """TODO"""
+        super().__init__(lookup_table)
+        self.train_set_generator = self.structure(load_train_set())
+
     def structure(self, raw_train_set):
         """TODO"""
         # TODO!!! DOCSTRING NEEDED! GENERATOR USED!
@@ -61,3 +67,22 @@ class TrainSet:
         essays_batched = np.array(essays_batched)
         scores_batched = np.array(scores_batched)
         return essays_batched, scores_batched
+
+class TestSet(ASAPDataSet):
+    """TODO"""
+    def __init__(self, load_test_set, lookup_table):
+        """TODO"""
+        super().__init__(lookup_table)
+        self._raw_test_set = load_test_set()
+
+    def all(self):
+        """TODO"""
+        essays_all = []
+        scores_all = []
+        for item in self._raw_test_set:
+            essays_all.append(self.embed_essay(item["essay"]))
+            scores_all.append(normalize_score(item["essay_set"],
+                                              item["domain1_score"]))
+        essays_all = np.array(essays_all)
+        scores_all = np.array(scores_all)
+        return essays_all, scores_all
