@@ -1,19 +1,20 @@
 import tensorflow as tf
+from tensorflow.contrib import rnn as tfrnn
 
-from .datasets import train_set, test_set
+from .datasets import lstm_train_set, lstm_test_set
 from .configs import paths, hp
 from .qwk import qwk
 
 def main():
-    essays = tf.placeholder(tf.float32, [None, hp.e_len, hp.s_len, hp.w_dim])
+    essays = tf.placeholder(tf.float32, [None, hp.lstm_e_len, hp.w_dim])
     scores = tf.placeholder(tf.float32, [None])
 
-    input_layer = tf.reshape(essays, [-1, hp.e_len, hp.s_len, hp.w_dim])
+    input_layer = tf.reshape(essays, [-1, hp.lstm_e_len, hp.w_dim])
 
-    conv1 = tf.layers.conv2d(
+    conv1 = tf.layers.conv1d(
         inputs=input_layer,
-        filters=hp.w_convunits_size,
-        kernel_size=[1, hp.w_window_len],
+        filters=hp.lstm_convunits_size,
+        kernel_size=hp.w_window_len,
         padding="same",
         activation=None)
 
@@ -21,32 +22,18 @@ def main():
 
     activated1 = tf.nn.relu(bn1)
 
-    pool1 = tf.layers.max_pooling2d(inputs=activated1, pool_size=[1, hp.s_len], strides=1)
+    lstm_cell = tfrnn.BasicLSTMCell(num_units=hp.lstm_hidden_size)
+    lstm_cell = tfrnn.DropoutWrapper(cell=lstm_cell, output_keep_prob=hp.lstm_dropout_keep_prob)
+    init_state = lstm_cell.zero_state(hp.batch_size, dtype=tf.float32)
 
-    conv2 = tf.layers.conv2d(
-        inputs=pool1,
-        filters=hp.s_convunits_size,
-        kernel_size=[hp.s_window_len, 1],
-        padding="same",
-        activation=None)
+    lstm_output, _ = tf.nn.dynamic_rnn(lstm_cell, activated1, dtype=tf.float32)
 
-    bn2 = tf.layers.batch_normalization(inputs=conv2)
+    mot = tf.reduce_mean(lstm_output, axis=1)
 
-    activated2 = tf.nn.relu(bn2)
+    linear = tf.layers.dense(inputs=mot, units=1, activation=tf.nn.sigmoid)
 
-    pool2 = tf.layers.max_pooling2d(inputs=activated2, pool_size=[hp.e_len, 1], strides=1)
-
-    pool2_flat = tf.reshape(pool2, [-1, hp.s_convunits_size])
-
-    # dropout = tf.layers.dropout(inputs=pool2_flat, rate=0.4)
-
-    dense1 = tf.layers.dense(inputs=pool2_flat, units=hp.hidden_size, activation=tf.nn.relu)
-
-    dense2 = tf.layers.dense(inputs=dense1, units=1, activation=tf.nn.sigmoid)
-
-    preds = tf.reshape(dense2, [-1])
+    preds = tf.reshape(linear, [-1])
     tf.summary.histogram('preds', preds)
-
 
     loss = tf.losses.mean_squared_error(scores, preds)
     tf.summary.scalar('loss', loss)
@@ -63,7 +50,7 @@ def main():
 
     add_global = g_step.assign_add(1)
 
-    test_essays, test_scores = test_set.all()
+    test_essays, test_scores = lstm_test_set.all()
 
     # human_scores_tensor = tf.constant(test_scores, tf.float32)
     # tf.summary.histogram('human_scores', human_scores_tensor)
@@ -75,7 +62,7 @@ def main():
         summary_writer = tf.summary.FileWriter(paths.summary_train, sess.graph)
         sess.run(tf.global_variables_initializer())
         for i in range(5000):
-            train_essays, train_scores = train_set.next_batch(hp.batch_size)
+            train_essays, train_scores = lstm_train_set.next_batch(hp.batch_size)
             sess.run([train_op, add_global], feed_dict={essays: train_essays, scores: train_scores})
             gstep, lrate, summary, test_loss, pred_scores = sess.run([g_step, learning_rate, merged, loss, preds], feed_dict={essays:test_essays, scores: test_scores})
 

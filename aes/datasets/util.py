@@ -52,6 +52,14 @@ class ASAPDataSet:
                 embedded[i, j] = self.lookup(word)
         return embedded
 
+    def lstm_embed_essay(self, essay_text):
+        """TODO!!! DOCSTRING NEEDED!"""
+        essay_text = nltk.word_tokenize(essay_text)
+        embedded = np.zeros([hp.lstm_e_len, hp.w_dim])
+        for i in range(min(len(essay_text), hp.lstm_e_len)):
+            embedded[i] = self.lookup(essay_text[i])
+        return embedded
+
 class MetaData(ASAPDataSet):
     """TODO"""
     def __init__(self):
@@ -101,6 +109,59 @@ class TestSet(ASAPDataSet):
         scores_all = []
         for item in self._raw_test_set:
             essays_all.append(self.embed_essay(item["essay"]))
+            scores_all.append(self.normalize_score(item["essay_set"],
+                                                   item["domain1_score"]))
+        essays_all = np.array(essays_all)
+        scores_all = np.array(scores_all)
+        return essays_all, scores_all
+
+
+## NEW!!
+
+class LSTM_TrainSet(ASAPDataSet):
+    """TODO"""
+    def __init__(self, load_train_set, lookup_table):
+        """TODO"""
+        super().__init__(lookup_table)
+        self.train_set_generator = self.structure(load_train_set())
+
+    def structure(self, raw_train_set):
+        """TODO"""
+        # TODO!!! DOCSTRING NEEDED! GENERATOR USED!
+        set_size = len(raw_train_set)
+        while True:
+            i = np.random.randint(0, set_size)
+            item = raw_train_set[i]
+            yield {"domain_id":    item["essay_set"],
+                   "essay": self.lstm_embed_essay(item["essay"]),
+                   "score": self.normalize_score(item["essay_set"],
+                                                 item["domain1_score"])}
+
+    def next_batch(self, size_demand):
+        """TODO"""
+        essays_batched = []
+        scores_batched = []
+        for _ in range(size_demand):
+            next_item = next(self.train_set_generator)
+            essays_batched.append(next_item["essay"])
+            scores_batched.append(next_item["score"])
+        essays_batched = np.array(essays_batched)
+        scores_batched = np.array(scores_batched)
+        return essays_batched, scores_batched
+
+class LSTM_TestSet(ASAPDataSet):
+    """TODO"""
+    def __init__(self, load_test_set, lookup_table):
+        """TODO"""
+        super().__init__(lookup_table)
+        self._raw_test_set = load_test_set()
+
+    def all(self):
+        """TODO"""
+        essays_all = []
+        scores_all = []
+        for item in self._raw_test_set:
+            essays_all.append(self.lstm_embed_essay(item["essay"]))
             scores_all.append(self.normalize_score(item["essay_set"],
                                                    item["domain1_score"]))
         essays_all = np.array(essays_all)

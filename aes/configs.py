@@ -1,4 +1,5 @@
 from os import path
+import time
 
 
 class HyperParameters:
@@ -9,7 +10,7 @@ class HyperParameters:
     """
 
     def __init__(self):
-        self._w_dim = 100
+        self._w_dim = 50
         self._s_len = 20
         self._e_len = 60
         self._w_window_len = 5
@@ -21,6 +22,12 @@ class HyperParameters:
         self._learning_rate = 0.006
         self._stddev = 0.1
         self._dropout_keep_prob = 0.5
+
+        # NEW 1-21 for LSTM model
+        self.lstm_e_len = 500  # word-count for whole essay
+        self.lstm_convunits_size = 64
+        self.lstm_hidden_size = 200
+        self.lstm_dropout_keep_prob = 0.3
 
     @property
     def w_dim(self):
@@ -72,14 +79,15 @@ class HyperParameters:
 
 class ProjectPaths:
     def __init__(self):
-        self.aes_root = path.dirname(__file__)
+        self.now = time.localtime
+        self.aes_root = "aes" 
         self.model = path.join(self.aes_root, "tfmodels", "models.ckpt")
-        self.summary_train = path.join(self.aes_root, "tfsummaries", "train")
-        self.summary_test = path.join(self.aes_root, "tfsummaries", "test")
+        self.summary_train = path.join(self.aes_root, "tfsummaries", time.strftime("train_%m-%d-%H.%M", self.now()))
+        self.summary_test = path.join(self.aes_root, "tfsummaries", time.strftime("test_%m-%d-%H.%M", self.now()))
 
         self.datasets_root = path.join(self.aes_root, "datasets")
         self.asap_path = path.join(self.datasets_root, "training_set_rel3.tsv")
-        self.glove_path = path.join(self.datasets_root, "glove.6B.100d.txt")
+        self.glove_path = path.join(self.datasets_root, "glove.6B.50d.txt")
 
 hp = HyperParameters()
 paths = ProjectPaths()

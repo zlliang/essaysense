@@ -4,7 +4,7 @@ Here is our Automatic Essay Scoring project.
 
 # Requirements
 
-Python 3.5+ and TensorFlow 1.4.1+ are required to run this project. You can install all the dependencies by `pip3 install -r requirements.txt`
+Python 3.5+ and TensorFlow 1.4.1+ are required to run this project. You can install all the dependencies by `pip3 install -r requirements.txt`.
 
 # Usage
 
