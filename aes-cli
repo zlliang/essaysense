@@ -8,7 +8,16 @@ import argparse
 
 
 # import aes.models
-import aes.models_lstm
-
 # aes.models.main()
-aes.models_lstm.main()
+
+# import aes.models_lstm
+# aes.models_lstm.main()
+
+# import aes.viz_tsne
+# aes.viz_tsne.main()
+
+# import aes.models_cnn_attention
+# aes.models_cnn_attention.main()
+
+import aes.models_lstm_attention
+aes.models_lstm_attention.main()

@@ -23,17 +23,24 @@ def main():
 
     activated1 = tf.nn.relu(bn1)
 
+    # # TODO!!! ATTENTION POOLING EXTENSION!
+    # attention1_dense = tf.layers.dense(inputs=activated1, units=hp.lstm_convunits_size, activation=tf.nn.tanh)
+    # attention1_weight = tf.layers.dense(inputs=attention1_dense, units=1, use_bias=False, activation=None)
+    # attention1_weight = tf.reshape(tf.nn.softmax(attention1_weight, dim=1), [-1, hp.lstm_e_len])
+
     lstm_cell = tfrnn.BasicLSTMCell(num_units=hp.lstm_hidden_size)
     lstm_cell = tfrnn.DropoutWrapper(cell=lstm_cell, output_keep_prob=hp.lstm_dropout_keep_prob)
     init_state = lstm_cell.zero_state(hp.batch_size, dtype=tf.float32)
 
     lstm_output, _ = tf.nn.dynamic_rnn(lstm_cell, activated1, dtype=tf.float32)
 
-    mot = tf.reduce_mean(lstm_output, axis=1, name="EssayRepresentation")
+    # # TODO!!! ATTENTION POOLING EXTENSION!
+    attention_dense = tf.layers.dense(inputs=lstm_output, units=hp.lstm_hidden_size, activation=tf.nn.tanh)
+    attention_weight = tf.layers.dense(inputs=attention_dense, units=1, use_bias=False, activation=None)
+    attention_weight = tf.reshape(tf.nn.softmax(attention_weight, dim=1), [-1, 1, hp.lstm_e_len])
+    attention_pool = tf.matmul(attention_weight, attention_dense)
 
-
-
-    linear = tf.layers.dense(inputs=mot, units=1, activation=tf.nn.sigmoid)
+    linear = tf.layers.dense(inputs=attention_pool, units=1, activation=tf.nn.sigmoid)
 
     preds = tf.reshape(linear, [-1], name="PREDS")
     tf.summary.histogram('preds', preds)
@@ -80,8 +87,8 @@ def main():
             print("iter: {} \t loss: {:.6f} \t learning rate: {:.6f} \t QWK: {:.6f}".format(gstep, test_loss, lrate, qwk_value))
             summary_writer.add_summary(summary, gstep)
 
-            if gstep % 10 == 0:
-                saver.save(sess, paths.model, global_step=gstep)
+            # if gstep % 10 == 0:
+                # saver.save(sess, paths.model, global_step=gstep)
 
 if __name__ == "__main__":
     main()

@@ -79,11 +79,15 @@ class HyperParameters:
 
 class ProjectPaths:
     def __init__(self):
-        self.now = time.localtime
-        self.aes_root = "aes" 
-        self.model = path.join(self.aes_root, "tfmodels", "models.ckpt")
-        self.summary_train = path.join(self.aes_root, "tfsummaries", time.strftime("train_%m-%d-%H.%M", self.now()))
-        self.summary_test = path.join(self.aes_root, "tfsummaries", time.strftime("test_%m-%d-%H.%M", self.now()))
+        self.now = time.strftime("%m-%d-%H.%M", time.localtime())
+        self.aes_root = "aes"
+        self.model_ckpt = path.join(self.aes_root, "tfmetadata")
+
+        self.model = path.join(self.aes_root, "tfmetadata", "models.ckpt")
+        self.summary_train = path.join(self.aes_root, "tfmetadata", "summary_train_"+self.now)
+        self.summary_test = path.join(self.aes_root, "tfmetadata", "summary_test_"+self.now)
+
+        self.model_test = path.join(self.summary_test, "models.ckpt")
 
         self.datasets_root = path.join(self.aes_root, "datasets")
         self.asap_path = path.join(self.datasets_root, "training_set_rel3.tsv")
