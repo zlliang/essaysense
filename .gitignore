@@ -5,6 +5,7 @@
 /aes/datasets/glove.6B.100d.txt
 /aes/datasets/train.tsv
 /aes/datasets/test.tsv
+/aes/datasets/pre_load.py
 /TODO.txt
 /archive/
 
