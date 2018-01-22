@@ -7,17 +7,20 @@ TODO
 import argparse
 
 
-# import aes.models
-# aes.models.main()
+# import aes.models_cnn
+# aes.models_cnn.main()
 
-# import aes.models_lstm
-# aes.models_lstm.main()
+import aes.models_lstm
+aes.models_lstm.main()
 
-# import aes.viz_tsne
-# aes.viz_tsne.main()
+# import aes.models_lstm_attention_pool
+# aes.models_lstm_attention_pool.main()
 
-# import aes.models_cnn_attention
-# aes.models_cnn_attention.main()
+# import aes.models_cnn_attention_pool
+# aes.models_cnn_attention_pool.main()
 
-import aes.models_lstm_attention
-aes.models_lstm_attention.main()
+# import aes.models_experiment
+# aes.models_experiment.main()
+
+# import aes.models_hybrid_zhangyong
+# aes.models_hybrid_zhangyong.main()

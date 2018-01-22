@@ -1,10 +1,9 @@
 import tensorflow as tf
 from tensorflow.contrib import rnn as tfrnn
-# from tensorflow.contrib.tensorboard.plugins import projector as tfprojector
 
-from .datasets import lstm_train_set, lstm_test_set
-from .configs import paths, hp
-from .qwk import qwk
+from aes.datasets import lstm_train_set, lstm_test_set
+from aes.configs import paths, hp
+from aes.qwk import qwk
 
 def main():
     essays = tf.placeholder(tf.float32, [None, hp.lstm_e_len, hp.w_dim], name="essays")
@@ -12,35 +11,30 @@ def main():
 
     input_layer = tf.reshape(essays, [-1, hp.lstm_e_len, hp.w_dim])
 
-    conv1 = tf.layers.conv1d(
+    conv = tf.layers.conv1d(
         inputs=input_layer,
-        filters=hp.lstm_convunits_size,
+        filters=hp.lstm_hidden_size,
         kernel_size=hp.w_window_len,
         padding="same",
         activation=None)
-
-    bn1 = tf.layers.batch_normalization(inputs=conv1)
-
-    activated1 = tf.nn.relu(bn1)
-
-    # # TODO!!! ATTENTION POOLING EXTENSION!
-    # attention1_dense = tf.layers.dense(inputs=activated1, units=hp.lstm_convunits_size, activation=tf.nn.tanh)
-    # attention1_weight = tf.layers.dense(inputs=attention1_dense, units=1, use_bias=False, activation=None)
-    # attention1_weight = tf.reshape(tf.nn.softmax(attention1_weight, dim=1), [-1, hp.lstm_e_len])
 
     lstm_cell = tfrnn.BasicLSTMCell(num_units=hp.lstm_hidden_size)
     lstm_cell = tfrnn.DropoutWrapper(cell=lstm_cell, output_keep_prob=hp.lstm_dropout_keep_prob)
     init_state = lstm_cell.zero_state(hp.batch_size, dtype=tf.float32)
 
-    lstm_output, _ = tf.nn.dynamic_rnn(lstm_cell, activated1, dtype=tf.float32)
+    lstm, _ = tf.nn.dynamic_rnn(lstm_cell, input_layer, dtype=tf.float32)
 
-    # # TODO!!! ATTENTION POOLING EXTENSION!
-    attention_dense = tf.layers.dense(inputs=lstm_output, units=hp.lstm_hidden_size, activation=tf.nn.tanh)
-    attention_weight = tf.layers.dense(inputs=attention_dense, units=1, use_bias=False, activation=None)
-    attention_weight = tf.reshape(tf.nn.softmax(attention_weight, dim=1), [-1, 1, hp.lstm_e_len])
-    attention_pool = tf.matmul(attention_weight, attention_dense)
+    # attention pooling! TODO
+    norm1 = tf.sqrt(tf.reduce_sum(tf.square(conv), axis=2))
+    norm2 = tf.sqrt(tf.reduce_sum(tf.square(lstm), axis=2))
+    inner_prod = tf.reduce_sum(conv*lstm, axis=2)
+    sim = inner_prod / (norm1 * norm2 + 1e-4)
+    sim = tf.nn.softmax(sim, dim=1)
+    sim = tf.reshape(sim, [-1, hp.lstm_e_len, 1])
+    att_output = sim * conv
+    att_output = tf.reduce_sum(att_output, axis=1, keep_dims=True)
 
-    linear = tf.layers.dense(inputs=attention_pool, units=1, activation=tf.nn.sigmoid)
+    linear = tf.layers.dense(inputs=att_output, units=1, activation=tf.nn.sigmoid)
 
     preds = tf.reshape(linear, [-1], name="PREDS")
     tf.summary.histogram('preds', preds)

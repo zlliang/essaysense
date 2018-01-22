@@ -54,6 +54,7 @@ class ASAPDataSet:
 
     def lstm_embed_essay(self, essay_text):
         """TODO!!! DOCSTRING NEEDED!"""
+        essay_text = essay_text.lower()
         essay_text = nltk.word_tokenize(essay_text)
         embedded = np.zeros([hp.lstm_e_len, hp.w_dim])
         for i in range(min(len(essay_text), hp.lstm_e_len)):

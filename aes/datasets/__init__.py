@@ -18,9 +18,9 @@ load_test_1 = partial(load_asap, path=path_test, domain_id="1")
 glove_table = load_glove()
 
 
-# train_set = TrainSet(load_train_1, glove_table)
-# test_set = TestSet(load_test_1, glove_table)
+train_set = TrainSet(load_train_1, glove_table)
+test_set = TestSet(load_test_1, glove_table)
 
 lstm_train_set = LSTM_TrainSet(load_train_1, glove_table)
 lstm_test_set = LSTM_TestSet(load_train_1, glove_table)
-meta = MetaData()
+# meta = MetaData()

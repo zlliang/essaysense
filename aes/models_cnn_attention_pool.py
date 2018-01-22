@@ -1,8 +1,8 @@
 import tensorflow as tf
 
-from .datasets import train_set, test_set
-from .configs import paths, hp
-from .qwk import qwk
+from aes.datasets import train_set, test_set
+from aes.configs import paths, hp
+from aes.qwk import qwk
 
 def main():
     essays = tf.placeholder(tf.float32, [None, hp.e_len, hp.s_len, hp.w_dim])
@@ -17,30 +17,49 @@ def main():
         padding="same",
         activation=None)
 
-    bn1 = tf.layers.batch_normalization(inputs=conv1)
+    # attention pooling 1 TODO
+    att1_mat = tf.Variable(tf.truncated_normal([hp.w_convunits_size, hp.w_convunits_size]), dtype=tf.float32)
+    att1_bias = tf.Variable(tf.truncated_normal([1, 1, 1, hp.w_convunits_size]), dtype=tf.float32)
+    att1_weight = tf.tensordot(conv1, att1_mat, axes=[3, 0]) + att1_bias
+    att1_weight = tf.nn.tanh(att1_weight)
+    att1_vec = tf.Variable(tf.truncated_normal([hp.w_convunits_size, 1]), dtype=tf.float32)
+    att1_weight = tf.tensordot(att1_weight, att1_vec, axes=[3, 0])
+        # attempt 1 TODO
+    # att1_weight = tf.reduce_mean(att1_weight, axis=0)
+    # att1_weight = tf.reduce_mean(att1_weight, axis=0)
+    # att1_weight = tf.nn.softmax(att1_weight, dim=0)
+    # att1_output = tf.tensordot(conv1, att1_weight, axes=[2, 0])
+    # att1_output = tf.reshape(att1_output, [-1, hp.e_len, 1, hp.w_convunits_size])
+        # attempt 2 TODO Seems right
+    att1_weight = tf.nn.softmax(att1_weight, dim=2)
+    att1_output = att1_weight * conv1
+    att1_output = tf.reduce_sum(att1_output, axis=2, keep_dims=True)
 
-    activated1 = tf.nn.relu(bn1)
-
-    pool1 = tf.layers.max_pooling2d(inputs=activated1, pool_size=[1, hp.s_len], strides=1)
 
     conv2 = tf.layers.conv2d(
-        inputs=pool1,
+        inputs=att1_output,
         filters=hp.s_convunits_size,
         kernel_size=[hp.s_window_len, 1],
         padding="same",
         activation=None)
 
-    bn2 = tf.layers.batch_normalization(inputs=conv2)
+    att2_mat = tf.Variable(tf.truncated_normal([hp.s_convunits_size, hp.s_convunits_size]), dtype=tf.float32)
+    att2_bias = tf.Variable(tf.truncated_normal([1, 1, 1, hp.s_convunits_size]), dtype=tf.float32)
+    att2_weight = tf.tensordot(conv2, att2_mat, axes=[3, 0]) + att2_bias
+    att2_weight = tf.nn.tanh(att2_weight)
+    att2_vec = tf.Variable(tf.truncated_normal([hp.s_convunits_size, 1]), dtype=tf.float32)
+    att2_weight = tf.tensordot(att2_weight, att2_vec, axes=[3, 0])
+        # attempt 1 TODO
+    # att2_weight = tf.reduce_mean(att2_weight, axis=0) # TODO
+    # att2_weight = tf.nn.softmax(att2_weight, dim=0)
+    # att2_output = tf.tensordot(conv2, att2_weight, axes=[1, 0])
+    # att2_output = tf.reshape(att2_output, [-1, hp.s_convunits_size])
+        # attempt 2 TODO seems right
+    att2_weight = tf.nn.softmax(att2_weight, dim=1)
+    att2_output = att2_weight * conv2
+    att2_output = tf.reduce_sum(att2_output, axis=1, keep_dims=True)
 
-    activated2 = tf.nn.relu(bn2)
-
-    pool2 = tf.layers.max_pooling2d(inputs=activated2, pool_size=[hp.e_len, 1], strides=1)
-
-    pool2_flat = tf.reshape(pool2, [-1, hp.s_convunits_size])
-
-    # dropout = tf.layers.dropout(inputs=pool2_flat, rate=0.4)
-
-    dense1 = tf.layers.dense(inputs=pool2_flat, units=hp.hidden_size, activation=tf.nn.relu)
+    dense1 = tf.layers.dense(inputs=att2_output, units=hp.hidden_size, activation=tf.nn.relu)
 
     dense2 = tf.layers.dense(inputs=dense1, units=1, activation=tf.nn.sigmoid)
 

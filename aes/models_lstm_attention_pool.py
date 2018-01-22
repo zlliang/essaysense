@@ -2,9 +2,9 @@ import tensorflow as tf
 from tensorflow.contrib import rnn as tfrnn
 # from tensorflow.contrib.tensorboard.plugins import projector as tfprojector
 
-from .datasets import lstm_train_set, lstm_test_set
-from .configs import paths, hp
-from .qwk import qwk
+from aes.datasets import lstm_train_set, lstm_test_set
+from aes.configs import paths, hp
+from aes.qwk import qwk
 
 def main():
     essays = tf.placeholder(tf.float32, [None, hp.lstm_e_len, hp.w_dim], name="essays")
@@ -16,8 +16,6 @@ def main():
         inputs=input_layer,
         filters=hp.lstm_convunits_size,
         kernel_size=hp.w_window_len,
-        # kernel_initializer=tf.initializers.variance_scaling(distribution="uniform"),
-        # bias_initializer=tf.initializers.variance_scaling(distribution="uniform"),
         padding="same",
         activation=None)
 
@@ -31,11 +29,19 @@ def main():
 
     lstm_output, _ = tf.nn.dynamic_rnn(lstm_cell, activated1, dtype=tf.float32)
 
-    mot = tf.reduce_mean(lstm_output, axis=1, name="EssayRepresentation")
+    # attention pooling! TODO
+    att_mat = tf.Variable(tf.truncated_normal([hp.lstm_hidden_size, hp.lstm_hidden_size]), dtype=tf.float32)
+    att_bias = tf.Variable(tf.truncated_normal([1, 1, hp.lstm_hidden_size]), dtype=tf.float32)
+    att_weight = tf.tensordot(lstm_output, att_mat, axes=[2, 0]) + att_bias
+    att_weight = tf.nn.tanh(att_weight)
+    att_vec = tf.Variable(tf.truncated_normal([hp.lstm_hidden_size, 1]), dtype=tf.float32)
+    att_weight = tf.tensordot(att_weight, att_vec, axes=[2, 0])
+    att_weight = tf.reduce_mean(att_weight, axis=0)
+    att_weight = tf.reshape(att_weight, [-1])
+    att_weight = tf.nn.softmax(att_weight)
+    att_output = tf.tensordot(att_weight, lstm_output, axes=[0, 1])
 
-
-
-    linear = tf.layers.dense(inputs=mot, units=1, activation=tf.nn.sigmoid)
+    linear = tf.layers.dense(inputs=att_output, units=1, activation=tf.nn.sigmoid)
 
     preds = tf.reshape(linear, [-1], name="PREDS")
     tf.summary.histogram('preds', preds)
@@ -63,16 +69,16 @@ def main():
 
 
 
-    # saver = tf.train.Saver()
+    saver = tf.train.Saver()
     # isTrained = False
     with tf.Session() as sess:
         summary_writer = tf.summary.FileWriter(paths.summary_train, sess.graph)
         # tsne! TODO
         # tfprojector.visualize_embeddings(summary_writer, projector_config)
         sess.run(tf.global_variables_initializer())
-        # ckpt = tf.train.get_checkpoint_state(paths.model_ckpt)
-        # if ckpt and ckpt.model_checkpoint_path:
-        #     saver.restore(sess, ckpt.model_checkpoint_path)
+        ckpt = tf.train.get_checkpoint_state(paths.model_ckpt)
+        if ckpt and ckpt.model_checkpoint_path:
+            saver.restore(sess, ckpt.model_checkpoint_path)
         for i in range(5000):
             train_essays, train_scores = lstm_train_set.next_batch(hp.batch_size)
             sess.run(train_op, feed_dict={essays: train_essays, scores: train_scores})
@@ -83,7 +89,7 @@ def main():
             summary_writer.add_summary(summary, gstep)
 
             # if gstep % 10 == 0:
-            #     saver.save(sess, paths.model, global_step=gstep)
+                # saver.save(sess, paths.model, global_step=gstep)
 
 if __name__ == "__main__":
     main()
