@@ -1,4 +1,4 @@
-<p align="center"><img src='https://raw.githubusercontent.com/deltaquincy/aes/master/images/logo.png' width='200' alt='aes logo'></p>
+<p align="center"><img src="http://p2u3jfd2o.bkt.clouddn.com/images/logo.png" width="200" alt="aes logo"></p>
 
 ![Travis CI build Status](https://img.shields.io/travis/deltaquincy/aes.svg?style=flat-square)
 
