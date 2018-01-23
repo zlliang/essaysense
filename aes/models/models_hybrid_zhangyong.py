@@ -16,25 +16,25 @@ def main():
         filters=hp.lstm_hidden_size,
         kernel_size=hp.w_window_len,
         padding="same",
-        activation=None)
+        activation=tf.nn.relu)
 
-    lstm_cell = tfrnn.BasicLSTMCell(num_units=hp.lstm_hidden_size)
-    lstm_cell = tfrnn.DropoutWrapper(cell=lstm_cell, output_keep_prob=hp.lstm_dropout_keep_prob)
-    init_state = lstm_cell.zero_state(hp.batch_size, dtype=tf.float32)
+    # lstm_cell = tfrnn.BasicLSTMCell(num_units=hp.lstm_hidden_size)
+    # lstm_cell = tfrnn.DropoutWrapper(cell=lstm_cell, output_keep_prob=hp.lstm_dropout_keep_prob)
+    # init_state = lstm_cell.zero_state(hp.batch_size, dtype=tf.float32)
+    #
+    # lstm, _ = tf.nn.dynamic_rnn(lstm_cell, input_layer, dtype=tf.float32)
+    # 
+    # # attention pooling! TODO
+    # norm1 = tf.sqrt(tf.reduce_sum(tf.square(conv), axis=2))
+    # norm2 = tf.sqrt(tf.reduce_sum(tf.square(lstm), axis=2))
+    # inner_prod = tf.reduce_sum(conv*lstm, axis=2)
+    # sim = inner_prod / (norm1 * norm2 + 1e-4)
+    # sim = tf.nn.softmax(sim, dim=1)
+    # sim = tf.reshape(sim, [-1, hp.lstm_e_len, 1])
+    # att_output = sim * conv
+    # att_output = tf.reduce_sum(att_output, axis=1, keep_dims=True)
 
-    lstm, _ = tf.nn.dynamic_rnn(lstm_cell, input_layer, dtype=tf.float32)
-
-    # attention pooling! TODO
-    norm1 = tf.sqrt(tf.reduce_sum(tf.square(conv), axis=2))
-    norm2 = tf.sqrt(tf.reduce_sum(tf.square(lstm), axis=2))
-    inner_prod = tf.reduce_sum(conv*lstm, axis=2)
-    sim = inner_prod / (norm1 * norm2 + 1e-4)
-    sim = tf.nn.softmax(sim, dim=1)
-    sim = tf.reshape(sim, [-1, hp.lstm_e_len, 1])
-    att_output = sim * conv
-    att_output = tf.reduce_sum(att_output, axis=1, keep_dims=True)
-
-    linear = tf.layers.dense(inputs=att_output, units=1, activation=tf.nn.sigmoid)
+    linear = tf.layers.dense(inputs=conv, units=1, activation=tf.nn.sigmoid)
 
     preds = tf.reshape(linear, [-1], name="PREDS")
     tf.summary.histogram('preds', preds)

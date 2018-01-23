@@ -4,7 +4,7 @@
 
 <!-- **Authors**: Quincy Liang (mblquincy@outlook.com) and Jiancong Gao (TODO: email) -->
 
-Several neural network models are included to modeling the scoring task, implemented using [TensorFlow](https://tensorflow.org). Pre-trained models are also included based on [ASAP-AES](https://www.kaggle.com/c/asap-aes/) dataset. You can use this application to score English essays, or train new models by feeding your own datasets.
+Several neural network models are included to modelling the scoring task, implemented using [TensorFlow](https://tensorflow.org). Pre-trained models are also included based on [ASAP-AES](https://www.kaggle.com/c/asap-aes/) dataset. You can use this application to score English essays, or train new models by feeding your own datasets.
 
 ## Requirements
 

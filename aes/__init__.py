@@ -5,7 +5,7 @@ Project AES
 AES is an NLP project on Automated Essay Scoring, based on neural network tech-
 nologies.
 
-Several neural network models are included to modeling the scoring task, imple-
+Several neural network models are included to modelling the scoring task, imple-
 mented using TensorFlow (see https://tensorflow.org). Pre-trainedmodels are also
 included based on ASAP-AES (see https://www.kaggle.com/c/asap-aes/) dataset. You
 can use this application to score English essays, or train new models by feeding

@@ -1,40 +1,59 @@
 """Neural network models."""
 
 import tensorflow as tf
-import numpy as np
+from tensorflow.contrib import rnn as tfrnn
+# import numpy as np
 
 from aes import datasets
-from aes.datasets import hp  # global hyperparameters
+from aes.configs import hp, paths  # global hyperparameters
+from aes.qwk import qwk # quadratic weighted kappa
 
 from aes.decorators import define_scope  # Danijar's decorators
 
 class Model:
     """TODO"""
-    def __init__(self, hp, essay, score):
+    def __init__(self, hp, essays, scores):
         """TODO"""
-        self.essay = essay
-        self.score = score
-        self.prediction
+        self.essays = essays
+        self.scores = scores
+        self.predictions
         self.optimize
-        self.loss
+        self.error
 
     @define_scope
-    def prediction(self):
+    def predictions(self):
         """TODO"""
-        return result
+        essays = self.essays
+        input_layer = tf.reshape(essays, [-1, hp.lstm_e_len, hp.w_dim])
+        conv1 = tf.layers.conv1d(
+            inputs=input_layer,
+            filters=hp.lstm_convunits_size,
+            kernel_size=hp.w_window_len,
+            padding="same",
+            activation=None)
+        bn1 = tf.layers.batch_normalization(inputs=conv1)
+        activated1 = tf.nn.relu(bn1)
+        lstm_cell = tfrnn.BasicLSTMCell(num_units=hp.lstm_hidden_size)
+        lstm_cell = tfrnn.DropoutWrapper(cell=lstm_cell, output_keep_prob=hp.lstm_dropout_keep_prob)
+        init_state = lstm_cell.zero_state(hp.batch_size, dtype=tf.float32)
+        lstm_output, _ = tf.nn.dynamic_rnn(lstm_cell, activated1, dtype=tf.float32)
+        mot = tf.reduce_mean(lstm_output, axis=1, name="EssayRepresentation")
+        linear = tf.layers.dense(inputs=mot, units=1, activation=tf.nn.sigmoid)
+        preds = tf.reshape(linear, [-1], name="PREDS")
+        return preds
 
     @define_scope
     def optimize(self):
         """TODO"""
         # TODO: experiment: dense layer
-        optimizer = tf.train.GradientDescentOptimizer(0.01)
-        return optimizer.minimize(self.loss)
+        optimizer = tf.train.AdamOptimizer(hp.learning_rate)
+        return optimizer.minimize(loss=self.error)
 
     @define_scope
-    def loss(self):
+    def error(self):
         """TODO"""
         # for now: MSE! TODO!!!
-        return tf.square(self.prediction - self.score)
+        return tf.losses.mean_squared_error(self.predictions, self.scores)
 
 class AesSession:
     """TODO"""
@@ -42,9 +61,9 @@ class AesSession:
         """TODO"""
         self.train_set = train_set
         self.sess = tf.Session()
-        self.essay = tf.placeholder(tf.float32, [hp.e_len, hp.s_len, hp.w_dim])
-        self.score = tf.placeholder(tf.float32, [1])
-        self.model = Model(hp, self.essay, self.score)
+        self.essays = tf.placeholder(tf.float32, [None, hp.e_len, hp.s_len, hp.w_dim])
+        self.scores = tf.placeholder(tf.float32, [None])
+        self.model = Model(hp, self.essays, self.scores)
 
     def initialize_variables(self):
         # try:
@@ -54,14 +73,16 @@ class AesSession:
         #     raise NotImplementedError  # TODO: train a new model?
         self.sess.run(tf.global_variables_initializer())
 
+    def close(self):
+        self.sess.close()
+
     def train(self):
         # TODO
-        for i in range(30):
-            essay = train_set[i]["essay"]
-            score = train_set[i]["score"]
-            error = self.sess.run(self.model.loss, {self.essay: essay, self.score: score})
+        for i in range(100):
+            essays_batch, scores_batch = self.train_set.next_batch(hp.batch_size)
+            error = self.sess.run(self.model.error, {self.essays: essays_batch, self.scores: scores_batch})
             print('Error: %.3f' % error)
-            self.sess.run(self.model.optimize, {self.essay: essay, self.score: score})
+            self.sess.run(self.model.optimize, {self.essays: essays_batch, self.scores: scores_batch})
 
     def evaluate(self):
         """TODO (Evaluate), using QWK"""
@@ -72,8 +93,9 @@ class AesSession:
         pass
 
 
-# def main():
-#     print("training")
-#     aes_sess = AesSession(hp, train_set)
-#     aes_sess.initialize_variables()
-#     aes_sess.train()
+def main():
+    print("training")
+    aes_sess = AesSession(hp, datasets.lstm_train_set)
+    aes_sess.initialize_variables()
+    aes_sess.train()
+    aes_sess.close()

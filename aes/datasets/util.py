@@ -1,5 +1,6 @@
 import numpy as np
 import nltk
+import re
 
 from ..configs import hp, paths
 
@@ -36,7 +37,12 @@ class ASAPDataSet:
         essay = []
         sentences = self.s_tokenizer.tokenize(essay_text)
         for sentence in sentences:
-            essay.append(nltk.word_tokenize(sentence))
+            tokens = nltk.word_tokenize(sentence)
+            for index, token in enumerate(tokens):
+                if token == "@" and (index+1) < len(tokens):
+                    tokens[index+1] = "@" + re.sub("[0-9]+.*", "", tokens[index+1].upper())
+                    tokens.pop(index)
+            essay.append(tokens)
         return essay
 
     def lookup(self, word):
@@ -60,6 +66,10 @@ class ASAPDataSet:
         """TODO!!! DOCSTRING NEEDED!"""
         essay_text = essay_text.lower()
         essay_text = nltk.word_tokenize(essay_text)
+        for index, token in enumerate(essay_text):
+            if token == "@" and (index+1) < len(essay_text):
+                essay_text[index+1] = "@" + re.sub("[0-9]+.*", "", essay_text[index+1].upper())
+                essay_text.pop(index)
         embedded = np.zeros([hp.lstm_e_len, hp.w_dim])
         for i in range(min(len(essay_text), hp.lstm_e_len)):
             embedded[i] = self.lookup(essay_text[i])
