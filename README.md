@@ -1,6 +1,6 @@
 <p align="center"><img src="http://p2u3jfd2o.bkt.clouddn.com/images/logo.png" width="240" alt="aes logo"></p>
 
-**AES** is an NLP project on Automatic Essay Scoring, based on neural network technologies.
+**AES** is an NLP project on Automated Essay Scoring, based on neural network technologies.
 
 <!-- **Authors**: Quincy Liang (mblquincy@outlook.com) and Jiancong Gao (TODO: email) -->
 

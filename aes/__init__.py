@@ -1,8 +1,8 @@
-"""An NLP project on Automatic Essay Scoring.
+"""An NLP project on Automated Essay Scoring.
 
 Project AES
 ===========
-AES is an NLP project on Automatic Essay Scoring, based on neural network tech-
+AES is an NLP project on Automated Essay Scoring, based on neural network tech-
 nologies.
 
 Several neural network models are included to modeling the scoring task, imple-
