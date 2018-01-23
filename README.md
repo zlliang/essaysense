@@ -6,24 +6,11 @@ Several neural network models are included to modeling the scoring task, impleme
 
 # Requirements
 
-Python 3.5+ and TensorFlow 1.4.1+ are required to run this project. Besides, Google's [Fire](https://github.com/google/python-fire/) is required to run the command line application. You can install all of the dependencies through the following command:
+[Python 3.5+](https://python.org) and [TensorFlow 1.4.1+](https://tensorflow.org) are required to run neural network models, and [click 6.7+](http://click.pocoo.org/6/) is required to run the command line application. You can install all of the dependencies through the following command, if you are using [pip](https://pip.pypa.io/) as your python package manager:
 ```bash
-pip3 install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 # Usage
 
-A Command Line Interface `aes-cli` is delivered to run this project. It's developed based on Google's [Fire](https://github.com/google/python-fire/).
-
-## Show CLI usage help
-```bash
-# Show CLI usage help information.
-./aes-cli help
-# Show avaliable models.
-./aes-cli show avaliable-models
-# Show
-```
-
-For now, an initial version of CNN for the AES task has been implemented. To train the model, just run the file `aes-cli`.
-
-# Tech Specs
+A Command Line Interface `aes-cli` is delivered to run this project. It's developed based on [click](http://click.pocoo.org/6/).

@@ -4,17 +4,59 @@
 
 TODO
 """
-import argparse
 
+# This project uses Google's Fire to create a command line interface,
+# see: https://github.com/google/python-fire
+# import fire
+# Project module.
+# import aes
+
+# class CLI:
+#     """Metadatas of the AES project."""
+#     @property
+#     def models_list(self):
+#         return {
+#                 "cnn": aes.models_cnn,
+#                 "cnn-lstm": aes.models_lstm,
+#                 "cnn-with-attention-pool": aes.models_cnn_attention_pool,
+#                 "lstm-with-attention-pool": aes.models_lstm_attention_pool
+#                 }
+#
+#
+# class ShowCLI(CLI):
+#
+#
+# class TrainCLI(CLI):
+#     """TODO"""
+#
+#     def
+#
+#
+# class Pipeline:
+#     """Grouping commands. TODO"""
+#
+#     def __init__(self):
+#         self.show = ShowCLI()
+#         self.train = TrainCLI()
+#         self.test = TestCLI()
+#         self.eval = EvalCLI()
+#         self.infer = InferCLI()
+#
+#
+# if __name__ == "__main__":
+#     fire.Fire(Pipeline)
 
 # import aes.models_cnn
 # aes.models_cnn.main()
 
-import aes.models_lstm
-aes.models_lstm.main()
+# import aes.models_lstm
+# aes.models_lstm.main()
 
 # import aes.models_lstm_attention_pool
 # aes.models_lstm_attention_pool.main()
+
+import aes.models_lstm_attention_pool_sentence_level
+aes.models_lstm_attention_pool_sentence_level.main()
 
 # import aes.models_cnn_attention_pool
 # aes.models_cnn_attention_pool.main()

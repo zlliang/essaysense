@@ -28,6 +28,8 @@ class HyperParameters:
         self.lstm_convunits_size = 64
         self.lstm_hidden_size = 200
         self.lstm_dropout_keep_prob = 0.3
+        self.lstm_sen_level_convunits_size = 80
+        self.lstm_sen_level_att_pool_hidden_size = 50
 
     @property
     def w_dim(self):

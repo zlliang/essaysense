@@ -1,7 +1,7 @@
 attrs==17.4.0
 bleach==2.1.2
+click==6.7
 enum34==1.1.6
-fire==0.1.2
 html5lib==1.0.1
 Markdown==2.6.11
 nltk==3.2.5

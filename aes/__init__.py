@@ -19,4 +19,5 @@ subpackages
 __version__ = "0.0.1"
 
 from . import datasets
+from . import models_cnn, models_lstm, models_cnn_attention_pool, models_lstm_attention_pool
 # from .models import *
