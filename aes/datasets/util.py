@@ -1,13 +1,17 @@
 import numpy as np
 import nltk
 
-from ..configs import hp
+from ..configs import hp, paths
 
 class ASAPDataSet:
     """TODO"""
     def __init__(self, lookup_table):
         """TODO"""
-        self.s_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        try:
+            self.s_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        except LookupError:
+            nltk.download("punkt")
+            self.s_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
         self.lookup_table = lookup_table
 
     @property

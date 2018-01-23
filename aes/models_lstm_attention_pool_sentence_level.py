@@ -16,7 +16,7 @@ def main():
         filters=hp.lstm_sen_level_convunits_size,
         kernel_size=[1, hp.w_window_len],
         padding="same",
-        activation=None)
+        activation=tf.nn.relu)
 
     # attention pooling 1 TODO
     att1_mat = tf.Variable(tf.truncated_normal([hp.lstm_sen_level_convunits_size, hp.lstm_sen_level_convunits_size]), dtype=tf.float32)

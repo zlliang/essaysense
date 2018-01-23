@@ -15,7 +15,7 @@ def main():
         filters=hp.w_convunits_size,
         kernel_size=[1, hp.w_window_len],
         padding="same",
-        activation=None)
+        activation=tf.nn.relu)
 
     # attention pooling 1 TODO
     att1_mat = tf.Variable(tf.truncated_normal([hp.w_convunits_size, hp.w_convunits_size]), dtype=tf.float32)
@@ -41,7 +41,7 @@ def main():
         filters=hp.s_convunits_size,
         kernel_size=[hp.s_window_len, 1],
         padding="same",
-        activation=None)
+        activation=tf.nn.relu)
 
     att2_mat = tf.Variable(tf.truncated_normal([hp.s_convunits_size, hp.s_convunits_size]), dtype=tf.float32)
     att2_bias = tf.Variable(tf.truncated_normal([1, 1, 1, hp.s_convunits_size]), dtype=tf.float32)

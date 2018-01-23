@@ -1,6 +1,5 @@
 import tensorflow as tf
 from tensorflow.contrib import rnn as tfrnn
-# from tensorflow.contrib.tensorboard.plugins import projector as tfprojector
 
 from aes.datasets import lstm_train_set, lstm_test_set
 from aes.configs import paths, hp
