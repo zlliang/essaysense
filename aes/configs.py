@@ -31,6 +31,8 @@ class HyperParameters:
         self.lstm_sen_level_convunits_size = 80
         self.lstm_sen_level_att_pool_hidden_size = 50
 
+        self.max_grad_norm = 5
+
     @property
     def w_dim(self):
         return self._w_dim
@@ -95,5 +97,6 @@ class ProjectPaths:
         self.asap_path = path.join(self.datasets_root, "training_set_rel3.tsv")
         self.glove_path = path.join(self.datasets_root, "glove.6B.50d.txt")
 
-hp = HyperParameters()
+hyperparameters = HyperParameters()
+hp = hyperparameters
 paths = ProjectPaths()

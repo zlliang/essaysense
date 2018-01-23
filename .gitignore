@@ -6,8 +6,11 @@
 /aes/datasets/train.tsv
 /aes/datasets/test.tsv
 /aes/datasets/pre_load.py
+/aes/datasets/custom/*
+!/aes/datasets/custom/README.md
 /TODO.txt
 /archive/
+/docs/acl17-latex/
 
 
 # Created by https://www.gitignore.io/api/macos,linux,windows,python

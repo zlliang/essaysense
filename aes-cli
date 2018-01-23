@@ -1,50 +1,42 @@
 #!/usr/bin/env python3
 
+# This is an executable file of AES project, providing a command line interface.
+# Note that the first line declares the intepreter in POSIX environments. So, on
+# Windows, we recommand using it via bash-like environments like Git Bash.
+
 """Command Line Interface of AES project.
 
-TODO
+This is an executable file for AES project in this preview version. You can run
+pre-trained models to score an essay text, train neural network models based on
+new datasets, or evaluate these models. For usage help, please run the following
+command in your system's command line environment:
+
+    $ ./aes-cli --help
+
+For more information, please see README.md.
 """
 
-# This project uses Google's Fire to create a command line interface,
-# see: https://github.com/google/python-fire
-# import fire
+# TODO
+# This project uses click (see http://click.pocoo.org/6/)
+# to create a command line interface.
+import click
 # Project module.
 # import aes
-
-# class CLI:
-#     """Metadatas of the AES project."""
-#     @property
-#     def models_list(self):
-#         return {
-#                 "cnn": aes.models_cnn,
-#                 "cnn-lstm": aes.models_lstm,
-#                 "cnn-with-attention-pool": aes.models_cnn_attention_pool,
-#                 "lstm-with-attention-pool": aes.models_lstm_attention_pool
-#                 }
 #
+# def print_version(ctx, param, value):
+#     if not value or ctx.resilient_parsing:
+#         return
+#     click.echo("AES Project " + aes.__version__)
+#     ctx.exit()
 #
-# class ShowCLI(CLI):
-#
-#
-# class TrainCLI(CLI):
-#     """TODO"""
-#
-#     def
-#
-#
-# class Pipeline:
-#     """Grouping commands. TODO"""
-#
-#     def __init__(self):
-#         self.show = ShowCLI()
-#         self.train = TrainCLI()
-#         self.test = TestCLI()
-#         self.eval = EvalCLI()
-#         self.infer = InferCLI()
-#
+# @click.command()
+# @click.option('-v', '--version', is_flag=True, callback=print_version,
+#               expose_value=False, is_eager=True, help="Show project version.")
+# def main():
+#     click.echo("Hello, world!")
 #
 # if __name__ == "__main__":
-#     fire.Fire(Pipeline)
+#     main()
 
 # import aes.models_cnn
 # aes.models_cnn.main()
@@ -55,8 +47,8 @@ TODO
 # import aes.models_lstm_attention_pool
 # aes.models_lstm_attention_pool.main()
 
-import aes.models_lstm_attention_pool_sentence_level
-aes.models_lstm_attention_pool_sentence_level.main()
+# import aes.models_lstm_attention_pool_sentence_level
+# aes.models_lstm_attention_pool_sentence_level.main()
 
 # import aes.models_cnn_attention_pool
 # aes.models_cnn_attention_pool.main()
@@ -66,3 +58,6 @@ aes.models_lstm_attention_pool_sentence_level.main()
 
 # import aes.models_hybrid_zhangyong
 # aes.models_hybrid_zhangyong.main()
+
+import aes.models_hybrid_zhangyong_sentence_level
+aes.models_hybrid_zhangyong_sentence_level.main()
