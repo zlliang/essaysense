@@ -147,7 +147,7 @@ class SentenceLevelCnnLstmWithAttention(Model):
             tf.truncated_normal([1, 1,
                                  self.hp.cnn_lstm_att_pool_size]),
             dtype=tf.float32)
-        att2_weight = tf.tensordot(lstm_output, att2_mat, axes=[2, 0])
+        att2_weight = tf.tensordot(lstm, att2_mat, axes=[2, 0])
         att2_weight = tf.nn.tanh(att2_weight)
         att2_vec = tf.Variable(
             tf.truncated_normal([self.hp.cnn_lstm_att_pool_size,
@@ -155,7 +155,7 @@ class SentenceLevelCnnLstmWithAttention(Model):
             dtype=tf.float32)
         att2_weight = tf.tensordot(att2_weight, att2_vec, axes=[2, 0])
         att2_weight = tf.nn.softmax(att2_weight, dim=1)
-        att2_output = att2_weight * lstm_output
+        att2_output = att2_weight * lstm
         att2_output = tf.reduce_sum(att2_output, axis=1)
 
         # Dense layer
