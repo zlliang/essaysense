@@ -25,8 +25,10 @@ and NLTK 3.2+ are required to make this project alive.
 
 Subpackages
 -----------
-    - models: models implemented in this project.
     - datasets: datasets used in this project.
+    - models: models implemented in this project.
+    - metrics:
+
 
 Run this project
 ----------------
@@ -41,18 +43,32 @@ Under MIT license
 """
 
 # This project follows SemVer 2.0 (see https://semver.org)
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
-# from . import models_cnn
+# Make datasets avaliable
+from aes import datasets
 
-# avaliable models
-# avaliable_models = {
-#     "cnn": models_cnn,
-#     "cnn-lstm": models_lstm,
-#     "cnn-attention-pool": models_cnn_attention_pool,
-#     "lstm-attention-pool": models_lstm_attention_pool
-# }
+# Configurations.
+from aes import configs
 
-# from . import datasets
-# from . import models_cnn, models_lstm, models_cnn_attention_pool, models_lstm_attention_pool
-# from .models import *
+# Models implemented in this version.
+from aes import models
+
+# Package metadata
+avaliable_models = {
+    "lstm": {
+        "model": models.DocumentLevelLstmWithMotPooling,
+        "train": datasets.DocumentLevelTrainSet,
+        "test": datasets.DocumentLevelTestSet
+    },
+    "cnn-cnn": {
+        "model": models.SentenceLevelCnn,
+        "train": datasets.SentenceLevelTrainSet,
+        "test": datasets.SentenceLevelTestSet
+    },
+    "cnn-lstm": {
+        "model": models.SentenceLevelCnnLstmWithAttention,
+        "train": datasets.SentenceLevelTrainSet,
+        "test": datasets.SentenceLevelTestSet
+    }
+}
