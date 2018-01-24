@@ -16,48 +16,113 @@ command in your system's command line environment:
 For more information, please see README.md.
 """
 
-# TODO
 # This project uses click (see http://click.pocoo.org/6/)
 # to create a command line interface.
 import click
-# Project module.
-# import aes
-#
-# def print_version(ctx, param, value):
-#     if not value or ctx.resilient_parsing:
-#         return
-#     click.echo("AES Project " + aes.__version__)
-#     ctx.exit()
-#
-# @click.command()
-# @click.option('-v', '--version', is_flag=True, callback=print_version,
-#               expose_value=False, is_eager=True, help="Show project version.")
-# def main():
-#     click.echo("Hello, world!")
-#
-# if __name__ == "__main__":
-#     main()
+# Version tag corresponding to the main package.
+__version__ = "0.0.3"
 
-# import aes.models_cnn
-# aes.models_cnn.main()
+# Version printing function.
+def print_version(ctx, param, value):
+    """Callback function that printing the version of the app."""
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo("AES Project: version " + __version__)
+    ctx.exit()
 
-# import aes.models_lstm
-# aes.models_lstm.main()
+# Model importing function.
+def import_model(model_name, prompt, mode):
+    import aes
+    try:
+        model_bundle = aes.avaliable_models[model_name]
+    except KeyError:
+        click.echo("[Error] Model '{}' does not exist.".format(model_name))
+        click.echo("[Avaliable models]")
+        for i, model_name in enumerate(aes.avaliable_models.keys()):
+            click.echo("{}: ".format(i+1) + model_name)
+        return
 
-# import aes.models_lstm_attention_pool
-# aes.models_lstm_attention_pool.main()
+    glove_table = aes.datasets.load_glove()
+    asap_train = aes.datasets.load_asap(
+        path=aes.configs.paths.asap_train,
+        domain_id=prompt)
+    train_set = model_bundle["train"](
+        hyperparameters=aes.configs.hyperparameters,
+        lookup_table=glove_table,
+        raw_train_set=asap_train)
 
-# import aes.models_lstm_attention_pool_sentence_level
-# aes.models_lstm_attention_pool_sentence_level.main()
+    if mode == "train":
+        asap_dev = aes.datasets.load_asap(
+            path=aes.configs.paths.asap_dev,
+            domain_id=prompt)
+        dev_set = model_bundle["test"](
+            hyperparameters=aes.configs.hyperparameters,
+            lookup_table=glove_table,
+            raw_test_set=asap_dev)
+        model = model_bundle["model"](
+            hyperparameters=aes.configs.hyperparameters,
+            train_set=train_set,
+            test_set=dev_set,
+            domain_id=prompt)
+        return model
+    elif mode == "evaluate":
+        asap_test = aes.datasets.load_asap(
+            path=aes.configs.paths.asap_test,
+            domain_id=prompt)
+        test_set = model_bundle["test"](
+            hyperparameters=aes.configs.hyperparameters,
+            lookup_table=glove_table,
+            raw_test_set=asap_test)
+        model = model_bundle["model"](
+            hyperparameters=aes.configs.hyperparameters,
+            train_set=train_set,
+            test_set=test_set,
+            domain_id=prompt)
+        return model
 
-# import aes.models_cnn_attention_pool
-# aes.models_cnn_attention_pool.main()
 
-# import aes.models_experiment
-# aes.models_experiment.main()
+# Command Line Interface Construction
+@click.option("-v", "--version", is_flag=True, callback=print_version,
+              expose_value=False, is_eager=True, help="Show project version.")
+@click.group()
+def cli():
+    pass  # main process, grouping commands later.
 
-# import aes.models_hybrid_zhangyong
-# aes.models_hybrid_zhangyong.main()
+@click.command(help="show all avaliable model names.")
+def show():
+    click.echo("[Loading] Avaliable models...")
+    import aes
+    for i, model_name in enumerate(aes.avaliable_models.keys()):
+        click.echo("{}: ".format(i+1) + model_name)
 
-# import aes.models_hybrid_zhangyong_sentence_level
-# aes.models_hybrid_zhangyong_sentence_level.main()
+@click.command(help="Train an automated essay scoring model.")
+@click.argument("model_name")
+@click.option("-p", "--prompt", default=1, help='Choose a prompt to run')
+def train(model_name, prompt):
+    model = import_model(model_name, prompt, mode="train")
+    model.train()
+    return
+
+@click.command(help="Evaluate a pre-trained AES model.")
+@click.argument("model_name")
+@click.option("-p", "--prompt", default=1, help='Choose a prompt to run')
+def evaluate(model_name, prompt):
+    model = import_model(model_name, prompt, mode="evaluate")
+    model.evaluate()
+    return
+
+@click.command(help="Visualize the a model via TensorBoard.")
+@click.argument("model_name")
+@click.option("-p", "--prompt", default=1, help='Choose a prompt to run')
+def visualize(model_name, prompt):
+    model = import_model(model_name, prompt, mode="evaluate")
+    model.visualize()
+    return
+
+cli.add_command(show)
+cli.add_command(train)
+cli.add_command(evaluate)
+cli.add_command(visualize)
+
+if __name__ == "__main__":
+    cli()

@@ -1,102 +1,55 @@
 from os import path
-import time
-
 
 class HyperParameters:
-    """
-    w for words
-    s for sentences
-    e for essay
-    """
+    """Hyper-parameters of this project.
 
+    This is a class holding necessary hyperparameters of this project. Instan-
+    tiation of the class can get all of the parameters. Note that property
+    protection is not constructed, so DO NOT change the values unless you know
+    what you are doing.
+    """
     def __init__(self):
-        self._w_dim = 50
-        self._s_len = 20
-        self._e_len = 60
-        self._w_window_len = 5
-        self._s_window_len = 3
-        self._w_convunits_size = 64
-        self._s_convunits_size = 32
-        self._hidden_size = 100
-        self._batch_size = 20
-        self._learning_rate = 0.006
-        self._stddev = 0.1
-        self._dropout_keep_prob = 0.5
-
-        # NEW 1-21 for LSTM model
-        self.lstm_e_len = 500  # word-count for whole essay
-        self.lstm_convunits_size = 64
-        self.lstm_hidden_size = 200
-        self.lstm_dropout_keep_prob = 0.3
-        self.lstm_sen_level_convunits_size = 80
-        self.lstm_sen_level_att_pool_hidden_size = 50
-
-        self.max_grad_norm = 5
-
-    @property
-    def w_dim(self):
-        return self._w_dim
-
-    @property
-    def s_len(self):
-        return self._s_len
-
-    @property
-    def e_len(self):
-        return self._e_len
-
-    @property
-    def w_window_len(self):
-        return self._w_window_len
-
-    @property
-    def s_window_len(self):
-        return self._s_window_len
-
-    @property
-    def w_convunits_size(self):
-        return self._w_convunits_size
-
-    @property
-    def s_convunits_size(self):
-        return self._s_convunits_size
-
-    @property
-    def hidden_size(self):
-        return self._hidden_size
-
-    @property
-    def batch_size(self):
-        return self._batch_size
-
-    @property
-    def learning_rate(self):
-        return self._learning_rate
-
-    @property
-    def stddev(self):
-        return self._stddev
-
-    @property
-    def dropout_keep_prob(self):
-        return self._dropout_keep_prob
+        self.train_epochs = 700  # General training epochs.
+        self.w_dim = 50  # Word embedding dimension.
+        self.s_len = 20  # Sentence length in the sentence-level models.
+        self.e_len = 60  # Essay length in the sentence-level models.
+        self.w_window_len = 5  # Convolution window size of word level.
+        self.s_window_len = 3  # Convolution window size of sentence level.
+        self.w_convunits_size = 64  # Convolution unit number of word level.
+        self.s_convunits_size = 32 # Convolution unit number of sentence level.
+        self.hidden_size = 100  # Dense layer size of sentence-level models.
+        self.batch_size = 20  # Batch size.
+        self.learning_rate = 0.006  # Initial learning rate.
+        self.dropout_keep_prob = 0.3  # Dropout rate.
+        self.d_e_len = 500  # Essay length in the document-level models.
+        self.lstm_hidden_size = 150  # Dense layer size of LSTM models.
+        self.cnn_lstm_convunits_size = 80  # Conv units of CNN-LSTM models.
+        self.cnn_lstm_att_pool_size = 50  # Attention pool size.
 
 class ProjectPaths:
+    """Project paths of the application."""
     def __init__(self):
-        self.now = time.strftime("%m-%d-%H.%M", time.localtime())
-        self.aes_root = "aes"
-        self.model_ckpt = path.join(self.aes_root, "tfmetadata")
-
-        self.model = path.join(self.aes_root, "tfmetadata", "models.ckpt")
-        self.summary_train = path.join(self.aes_root, "tfmetadata", "summary_train_"+self.now)
-        self.summary_test = path.join(self.aes_root, "tfmetadata", "summary_test_"+self.now)
-
-        self.model_test = path.join(self.summary_test, "models.ckpt")
-
+        self.aes_root = "aes"  # Temporarily
+        self.tfmetadata = path.join(self.aes_root, "tfmetadata")
         self.datasets_root = path.join(self.aes_root, "datasets")
-        self.asap_path = path.join(self.datasets_root, "training_set_rel3.tsv")
-        self.glove_path = path.join(self.datasets_root, "glove.6B.50d.txt")
+        self.asap = path.join(self.datasets_root, "training_set_rel3.tsv")
+        self.asap_train = path.join(self.datasets_root, "train.tsv")
+        self.asap_dev = path.join(self.datasets_root, "dev.tsv")
+        self.asap_test = path.join(self.datasets_root, "test.tsv")
+        self.asap_url = "http://p2u3jfd2o.bkt.clouddn.com/datasets/training_set_rel3.tsv"
+        self.glove = path.join(self.datasets_root, "glove.6B.50d.txt")
+        self.glove_url = "http://p2u3jfd2o.bkt.clouddn.com/datasets/glove.6B.50d.txt"
 
+    def model(self, model_name):
+        return path.join(self.tfmetadata, model_name, "model.ckpt")
+
+    def model_ckpt(self, model_name):
+        return path.join(self.tfmetadata, model_name)
+
+    def summary(self, model_name):
+        return path.join(self.tfmetadata, model_name, "summary")
+
+
+# Variables to export.
 hyperparameters = HyperParameters()
-hp = hyperparameters
 paths = ProjectPaths()
