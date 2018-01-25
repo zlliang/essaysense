@@ -19,7 +19,7 @@ class ASAPDataSet:
         """Constructor for initializing ASAP-AES datasets.
 
         Args:
-            - hyperparameters TODO: hyperparameters of the experiments.
+            - hyperparameters: hyperparameters of the experiments.
             - lookup_table: word embedding lookup table, which should be a dict
                             mapping words into their NumPy vector repre-
                             sentation.
@@ -77,20 +77,6 @@ class ASAPDataSet:
             # If a unknown word appers, treat it as a zero vector.
             return np.zeros(self.hp.w_dim)
 
-    def tokenize(self, essay_text):
-        """Deprecated TODO"""
-        essay_text = essay_text.lower()
-        essay = []
-        sentences = self.s_tokenizer.tokenize(essay_text)
-        for sentence in sentences:
-            tokens = nltk.word_tokenize(sentence)
-            for index, token in enumerate(tokens):
-                if token == "@" and (index+1) < len(tokens):
-                    tokens[index+1] = "@" + re.sub("[0-9]+.*", "", tokens[index+1].upper())
-                    tokens.pop(index)
-            essay.append(tokens)
-        return essay
-
     def sentence_level_tokenize(self, essay_text):
         """Tokenize essay text on sentence level.
 
@@ -124,17 +110,6 @@ class ASAPDataSet:
                     tokens.pop(index)
             essay.append(tokens)
         return essay
-
-    def embed_essay(self, essay_text):
-        """Deprecated TODO"""
-        essay_text = self.tokenize(essay_text)
-        embedded = np.zeros([self.hp.e_len, self.hp.s_len, self.hp.w_dim])
-        for i in range(min(len(essay_text), self.hp.e_len)):
-            sentence = essay_text[i]
-            for j in range(min(len(sentence), self.hp.s_len)):
-                word = sentence[j]
-                embedded[i, j] = self.lookup(word)
-        return embedded
 
     def sentence_level_embed(self, essay_text):
         """Complete word embedding for an essay text on sentence level.
@@ -201,18 +176,6 @@ class ASAPDataSet:
             embedded[i] = self.lookup(essay_text[i])
         return embedded
 
-    def lstm_embed_essay(self, essay_text):
-        """Deprecated TODO"""
-        essay_text = essay_text.lower()
-        essay_text = nltk.word_tokenize(essay_text)
-        for index, token in enumerate(essay_text):
-            if token == "@" and (index+1) < len(essay_text):
-                essay_text[index+1] = "@" + re.sub("[0-9]+.*", "", essay_text[index+1].upper())
-                essay_text.pop(index)
-        embedded = np.zeros([self.hp.d_e_len, self.hp.w_dim])
-        for i in range(min(len(essay_text), self.hp.d_e_len)):
-            embedded[i] = self.lookup(essay_text[i])
-        return embedded
 
 class SentenceLevelTrainSet(ASAPDataSet):
     """Class for sentence-level ASAP-AES train sets.
@@ -224,7 +187,7 @@ class SentenceLevelTrainSet(ASAPDataSet):
         """Constructor for initializing sentence-level ASAP-AES train sets.
 
         Args:
-            - hyperparameters TODO: hyperparameters of the experiments.
+            - hyperparameters: hyperparameters of the experiments.
             - lookup_table: word embedding lookup table, which should be a dict
                             mapping words into their NumPy vector repre-
                             sentation.
@@ -295,7 +258,7 @@ class SentenceLevelTestSet(ASAPDataSet):
         """Constructor for initializing sentence-level ASAP-AES train sets.
 
         Args:
-            - hyperparameters TODO: hyperparameters of the experiments.
+            - hyperparameters: hyperparameters of the experiments.
             - lookup_table: word embedding lookup table, which should be a dict
                             mapping words into their NumPy vector repre-
                             sentation.
@@ -337,7 +300,7 @@ class DocumentLevelTrainSet(ASAPDataSet):
         """Constructor for initializing document-level ASAP-AES train sets.
 
         Args:
-            - hyperparameters TODO: hyperparameters of the experiments.
+            - hyperparameters: hyperparameters of the experiments.
             - lookup_table: word embedding lookup table, which should be a dict
                             mapping words into their NumPy vector repre-
                             sentation.
@@ -408,7 +371,7 @@ class DocumentLevelTestSet(ASAPDataSet):
         """Constructor for initializing document-level ASAP-AES train sets.
 
         Args:
-            - hyperparameters TODO: hyperparameters of the experiments.
+            - hyperparameters: hyperparameters of the experiments.
             - lookup_table: word embedding lookup table, which should be a dict
                             mapping words into their NumPy vector repre-
                             sentation.
@@ -439,157 +402,3 @@ class DocumentLevelTestSet(ASAPDataSet):
         essays_all = np.array(essays_all)
         scores_all = np.array(scores_all)
         return essays_all, scores_all
-
-
-
-class TrainSet(ASAPDataSet):
-    """TODO"""
-    def __init__(self, load_train_set, lookup_table):
-        """TODO"""
-        super().__init__(lookup_table)
-        self.train_set_generator = self.structure(load_train_set())
-
-    def structure(self, raw_train_set):
-        """TODO"""
-        # TODO!!! DOCSTRING NEEDED! GENERATOR USED!
-        set_size = len(raw_train_set)
-        while True:
-            i = np.random.randint(0, set_size)
-            item = raw_train_set[i]
-            yield {"domain_id":    item["essay_set"],
-                   "essay": self.embed_essay(item["essay"]),
-                   "score": self.normalize_score(item["essay_set"],
-                                                 item["domain1_score"])}
-
-    def next_batch(self, size_demand):
-        """TODO"""
-        essays_batched = []
-        scores_batched = []
-        for _ in range(size_demand):
-            next_item = next(self.train_set_generator)
-            essays_batched.append(next_item["essay"])
-            scores_batched.append(next_item["score"])
-        essays_batched = np.array(essays_batched)
-        scores_batched = np.array(scores_batched)
-        return essays_batched, scores_batched
-
-class TestSet(ASAPDataSet):
-    """TODO"""
-    def __init__(self, load_test_set, lookup_table):
-        """TODO"""
-        super().__init__(lookup_table)
-        self._raw_test_set = load_test_set()
-
-    def all(self):
-        """TODO"""
-        essays_all = []
-        scores_all = []
-        for item in self._raw_test_set:
-            essays_all.append(self.embed_essay(item["essay"]))
-            scores_all.append(self.normalize_score(item["essay_set"],
-                                                   item["domain1_score"]))
-        essays_all = np.array(essays_all)
-        scores_all = np.array(scores_all)
-        return essays_all, scores_all
-
-
-class LSTM_TrainSet(ASAPDataSet):
-    """TODO"""
-    def __init__(self, load_train_set, lookup_table):
-        """TODO"""
-        super().__init__(lookup_table)
-        self.train_set_generator = self.structure(load_train_set())
-
-    def structure(self, raw_train_set):
-        """TODO"""
-        # TODO!!! DOCSTRING NEEDED! GENERATOR USED!
-        set_size = len(raw_train_set)
-        while True:
-            i = np.random.randint(0, set_size)
-            item = raw_train_set[i]
-            yield {"domain_id":    item["essay_set"],
-                   "essay": self.lstm_embed_essay(item["essay"]),
-                   "score": self.normalize_score(item["essay_set"],
-                                                 item["domain1_score"])}
-
-    def next_batch(self, size_demand):
-        """TODO"""
-        essays_batched = []
-        scores_batched = []
-        for _ in range(size_demand):
-            next_item = next(self.train_set_generator)
-            essays_batched.append(next_item["essay"])
-            scores_batched.append(next_item["score"])
-        essays_batched = np.array(essays_batched)
-        scores_batched = np.array(scores_batched)
-        return essays_batched, scores_batched
-
-class LSTM_TestSet(ASAPDataSet):
-    """TODO"""
-    def __init__(self, load_test_set, lookup_table):
-        """TODO"""
-        super().__init__(lookup_table)
-        self._raw_test_set = load_test_set()
-
-    def all(self):
-        """TODO"""
-        essays_all = []
-        scores_all = []
-        for item in self._raw_test_set:
-            essays_all.append(self.lstm_embed_essay(item["essay"]))
-            scores_all.append(self.normalize_score(item["essay_set"],
-                                                   item["domain1_score"]))
-        essays_all = np.array(essays_all)
-        scores_all = np.array(scores_all)
-        return essays_all, scores_all
-
-
-class CrossDomain_TrainSet(ASAPDataSet):
-    """TODO"""
-    def __init__(self, load_train_set, lookup_table, sample_value):
-        """TODO"""
-        super().__init__(lookup_table)
-        self.sample_value = sample_value
-        self.essays_all = []
-        self.scores_all = []
-        for item in load_train_set()[:self.sample_value]:
-            self.essays_all.append(self.embed_essay(item["essay"]))
-            self.scores_all.append(self.normalize_score(item["essay_set"],
-                                                   item["domain1_score"]))
-
-    def next_batch(self, size_demand):
-        """TODO"""
-        essays_batched = []
-        scores_batched = []
-        for i in range(size_demand):
-            randindex = np.random.randint(0, self.sample_value)
-            essays_batched.append(self.essays_all[randindex])
-            scores_batched.append(self.scores_all[randindex])
-        essays_batched = np.array(essays_batched)
-        scores_batched = np.array(scores_batched)
-        return essays_batched, scores_batched
-
-class CrossDomain_LSTM_TrainSet(ASAPDataSet):
-    """TODO"""
-    def __init__(self, load_train_set, lookup_table, sample_value):
-        """TODO"""
-        super().__init__(lookup_table)
-        self.sample_value = sample_value
-        self.essays_all = []
-        self.scores_all = []
-        for item in load_train_set()[:self.sample_value]:
-            self.essays_all.append(self.lstm_embed_essay(item["essay"]))
-            self.scores_all.append(self.normalize_score(item["essay_set"],
-                                                   item["domain1_score"]))
-
-    def next_batch(self, size_demand):
-        """TODO"""
-        essays_batched = []
-        scores_batched = []
-        for i in range(size_demand):
-            randindex = np.random.randint(0, self.sample_value)
-            essays_batched.append(self.essays_all[randindex])
-            scores_batched.append(self.scores_all[randindex])
-        essays_batched = np.array(essays_batched)
-        scores_batched = np.array(scores_batched)
-        return essays_batched, scores_batched

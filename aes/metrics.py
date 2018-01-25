@@ -33,6 +33,10 @@ def qwk(scores_infer, scores_gold, domain_id):
     numeric ratings. Note that for this version, the function is only
     compatible scores from with ASAP-AES dataset.
 
+    Reference:
+        Evaluation metrics delivered by ASAP-AES, see:
+        https://github.com/benhamner/ASAP-AES.
+
     Args:
         - scores_infer: prediction scores ranging in [0, 1], as a NumPy array.
         - scores_gold: gold scores ranging in [0, 1], as a NumPy array.
