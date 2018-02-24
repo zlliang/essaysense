@@ -1,6 +1,6 @@
-<p align="center"><img src="http://p2u3jfd2o.bkt.clouddn.com/images/logo.png" width="240" alt="aes logo"></p>
+<p align="center"><img src="http://p4my5lf60.bkt.clouddn.com/images/logo.svg" width="240" alt="aes logo"></p>
 
-**AES** is an NLP project on Automated Essay Scoring, based on neural network technologies.
+**EssaySense** (former name: AES) is an NLP project on Automated Essay Scoring, based on neural network technologies.
 
 **Authors**: _Zilong Liang_ and _Jiancong Gao_.
 
