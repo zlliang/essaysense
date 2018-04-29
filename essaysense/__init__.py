@@ -1,9 +1,9 @@
 """An NLP project on Automated Essay Scoring.
 
-Project AES
-===========
-AES is an NLP project on Automated Essay Scoring, based on neural network tech-
-nologies.
+Project EssaySense
+==================
+EssaySense is an NLP project on Automated Essay Scoring, based on neural network
+tech-nologies.
 
 Several neural network models are included to modelling the scoring task, imple-
 mented using TensorFlow (see https://tensorflow.org). Pre-trainedmodels are also
@@ -16,7 +16,7 @@ Use this documentation
 For any submodule, class or function, you can use built-in 'help' method to
 check the documentation.
 
-    >>> help(aes.datasets)
+    >>> help(essaysense.datasets)
 
 Requirements
 ------------
@@ -33,8 +33,8 @@ Subpackages
 Run this project
 ----------------
 Temporarily in this preview version, we deliver a command line interfate
-'aes-cli' alongwith the project to run the models. For more information, please
-see README.md.
+'essaysense-cli' alongwith the project to run the models. For more information,
+please see README.md.
 
 Copyright and license
 ---------------------
@@ -46,13 +46,13 @@ Under MIT license
 __version__ = "0.0.3"
 
 # Make datasets avaliable
-from aes import datasets
+from essaysense import datasets
 
 # Configurations.
-from aes import configs
+from essaysense import configs
 
 # Models implemented in this version.
-from aes import models
+from essaysense import models
 
 # Package metadata
 avaliable_models = {

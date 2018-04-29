@@ -3,8 +3,8 @@ import codecs
 import urllib.request
 import numpy as np
 
-from aes.configs import paths
-from aes.configs import hyperparameters as hp
+from essaysense.configs import paths
+from essaysense.configs import hyperparameters as hp
 
 # Metadata of Named Entities Recogonition (NER) and other replacements.
 ner = ["@PERSON", "@ORGANIZATION", "@LOCATION", "@DATE",

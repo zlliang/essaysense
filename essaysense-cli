@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
-# This is an executable file of AES project, providing a command line interface.
-# Note that the first line declares the intepreter in POSIX environments. So, on
-# Windows, we recommand using it via bash-like environments like Git Bash.
+# This is an executable file of EssaySense project, providing a command line
+# interface. Note that the first line declares the intepreter in POSIX
+# environments. So, on Windows, we recommand using it via bash-like environments
+# like Git Bash.
 
-"""Command Line Interface of AES project.
+"""Command Line Interface of EssaySense project.
 
-This is an executable file for AES project in this preview version. You can run
-pre-trained models to score an essay text, train neural network models based on
-new datasets, or evaluate these models. For usage help, please run the following
-command in your system's command line environment:
+This is an executable file for EssaySense project in this preview version. You
+can run pre-trained models to score an essay text, train neural network models
+based on new datasets, or evaluate these models. For usage help, please run the following command in your system's command line environment:
 
-    $ ./aes-cli --help
+    $ ./essaysense-cli --help
 
 For more information, please see README.md.
 """
@@ -27,54 +27,54 @@ def print_version(ctx, param, value):
     """Callback function that printing the version of the app."""
     if not value or ctx.resilient_parsing:
         return
-    click.echo("AES Project: version " + __version__)
+    click.echo("EssaySense Project: version " + __version__)
     ctx.exit()
 
 # Model importing function.
 def import_model(model_name, prompt, mode):
-    import aes
+    import essaysense
     try:
-        model_bundle = aes.avaliable_models[model_name]
+        model_bundle = essaysense.avaliable_models[model_name]
     except KeyError:
         click.echo("[Error] Model '{}' does not exist.".format(model_name))
         click.echo("[Avaliable models]")
-        for i, model_name in enumerate(aes.avaliable_models.keys()):
+        for i, model_name in enumerate(essaysense.avaliable_models.keys()):
             click.echo("{}: ".format(i+1) + model_name)
         return
 
-    glove_table = aes.datasets.load_glove()
-    asap_train = aes.datasets.load_asap(
-        path=aes.configs.paths.asap_train,
+    glove_table = essaysense.datasets.load_glove()
+    asap_train = essaysense.datasets.load_asap(
+        path=essaysense.configs.paths.asap_train,
         domain_id=prompt)
     train_set = model_bundle["train"](
-        hyperparameters=aes.configs.hyperparameters,
+        hyperparameters=essaysense.configs.hyperparameters,
         lookup_table=glove_table,
         raw_train_set=asap_train)
 
     if mode == "train":
-        asap_dev = aes.datasets.load_asap(
-            path=aes.configs.paths.asap_dev,
+        asap_dev = essaysense.datasets.load_asap(
+            path=essaysense.configs.paths.asap_dev,
             domain_id=prompt)
         dev_set = model_bundle["test"](
-            hyperparameters=aes.configs.hyperparameters,
+            hyperparameters=essaysense.configs.hyperparameters,
             lookup_table=glove_table,
             raw_test_set=asap_dev)
         model = model_bundle["model"](
-            hyperparameters=aes.configs.hyperparameters,
+            hyperparameters=essaysense.configs.hyperparameters,
             train_set=train_set,
             test_set=dev_set,
             domain_id=prompt)
         return model
     elif mode == "evaluate":
-        asap_test = aes.datasets.load_asap(
-            path=aes.configs.paths.asap_test,
+        asap_test = essaysense.datasets.load_asap(
+            path=essaysense.configs.paths.asap_test,
             domain_id=prompt)
         test_set = model_bundle["test"](
-            hyperparameters=aes.configs.hyperparameters,
+            hyperparameters=essaysense.configs.hyperparameters,
             lookup_table=glove_table,
             raw_test_set=asap_test)
         model = model_bundle["model"](
-            hyperparameters=aes.configs.hyperparameters,
+            hyperparameters=essaysense.configs.hyperparameters,
             train_set=train_set,
             test_set=test_set,
             domain_id=prompt)
@@ -91,8 +91,8 @@ def cli():
 @click.command(help="show all avaliable model names.")
 def show():
     click.echo("[Loading] Avaliable models...")
-    import aes
-    for i, model_name in enumerate(aes.avaliable_models.keys()):
+    import essaysense
+    for i, model_name in enumerate(essaysense.avaliable_models.keys()):
         click.echo("{}: ".format(i+1) + model_name)
 
 @click.command(help="Train an automated essay scoring model.")
@@ -103,7 +103,7 @@ def train(model_name, prompt):
     model.train()
     return
 
-@click.command(help="Evaluate a pre-trained AES model.")
+@click.command(help="Evaluate a pre-trained EssaySense model.")
 @click.argument("model_name")
 @click.option("-p", "--prompt", default=1, help='Choose a prompt to run')
 def evaluate(model_name, prompt):

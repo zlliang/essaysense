@@ -3,7 +3,7 @@ import csv
 import codecs
 import urllib.request
 
-from aes.configs import paths
+from essaysense.configs import paths
 
 # Some metadata about ASAP-AES dataset, in order to extract valid items.
 set_valid = [str(i) for i in range(1, 9)]

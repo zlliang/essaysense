@@ -1,8 +1,8 @@
 import os
 import tensorflow as tf
 
-from aes.configs import paths
-from aes.metrics import qwk
+from essaysense.configs import paths
+from essaysense.metrics import qwk
 
 class Model:
     """Neural network models templeate on ASAP-AES dataset.

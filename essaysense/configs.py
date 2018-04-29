@@ -29,7 +29,7 @@ class HyperParameters:
 class ProjectPaths:
     """Project paths of the application."""
     def __init__(self):
-        self.aes_root = "aes"  # Temporarily
+        self.aes_root = "essaysense"  # Temporarily
         self.tfmetadata = path.join(self.aes_root, "tfmetadata")
         self.datasets_root = path.join(self.aes_root, "datasets")
         self.asap = path.join(self.datasets_root, "training_set_rel3.tsv")

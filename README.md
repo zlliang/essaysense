@@ -1,4 +1,4 @@
-<p align="center"><img src="http://p4my5lf60.bkt.clouddn.com/images/logo.svg" width="240" alt="aes logo"></p>
+# EssaySense
 
 **EssaySense** (former name: AES) is an NLP project on Automated Essay Scoring, based on neural network technologies.
 
@@ -15,24 +15,24 @@ $ pip3 install -r requirements.txt
 
 Besides, NLTK's punctuation metadata is needed to perform sentence tokenizing task. But **do not** bother to download it manually, because this application would detect or download it automatically.
 
-For **datasets** part, this project uses `training_set_rel3.tsv` in [ASAP-AES](https://www.kaggle.com/c/asap-aes/) as essay dataset and `glove.6B.50d.txt` of [GloVe](https://github.com/stanfordnlp/GloVe) project as word embedding dataset. This project can detect or download these datasets automatically. However, they are about approximate 200MB totally, so if you mind the Internet speed, you can prepare them yourself, and put them into: `aes/datasets/`.
+For **datasets** part, this project uses `training_set_rel3.tsv` in [ASAP-AES](https://www.kaggle.com/c/asap-aes/) as essay dataset and `glove.6B.50d.txt` of [GloVe](https://github.com/stanfordnlp/GloVe) project as word embedding dataset. This project can detect or download these datasets automatically. However, they are about approximate 200MB totally, so if you mind the Internet speed, you can prepare them yourself, and put them into: `essaysense/datasets/`.
 
 ## Usage
 
-Check out the root directory of this project. A Command Line Interface named `aes-cli` is delivered to run the project. It's developed based on [click](http://click.pocoo.org/6/). This CLI application could perform several tasks, including listing avaliable models, training, evaluating and visualizing. The follwing block gives an overview on usage.
+Check out the root directory of this project. A Command Line Interface named `essaysense-cli` is delivered to run the project. It's developed based on [click](http://click.pocoo.org/6/). This CLI application could perform several tasks, including listing avaliable models, training, evaluating and visualizing. The follwing block gives an overview on usage.
 ```bash
-$ ./aes-cli --help  # Show help information.
-$ ./aes-cli --version  # Show the current version of the app.
+$ ./essaysense-cli --help  # Show help information.
+$ ./essaysense-cli --version  # Show the current version of the app.
 
-$ ./aes-cli show  # Show names of avaliable AES models.
-$ ./aes-cli train (model-name) [--prompt (domain-id)]  # Train a model from the beginning.
-$ ./aes-cli evaluate (model-name) [--prompt (domain-id)]  # Run test on a specific pre-trained model.
-$ ./aes-cli visualize (model-name) [--prompt (domain-id)]  # Visualize training process in TensorBoard.
+$ ./essaysense-cli show  # Show names of avaliable AES models.
+$ ./essaysense-cli train (model-name) [--prompt (domain-id)]  # Train a model from the beginning.
+$ ./essaysense-cli evaluate (model-name) [--prompt (domain-id)]  # Run test on a specific pre-trained model.
+$ ./essaysense-cli visualize (model-name) [--prompt (domain-id)]  # Visualize training process in TensorBoard.
 ```
 
 In detail, suppose that your want to see avaliable AES models, you can use the command `show`. Note that these model names are important if you want to train them:
 ```bash
-$ ./aes-cli show
+$ ./essaysense-cli show
 [Loading] Avaliable models...
 1: cnn-cnn
 2: cnn-lstm
@@ -41,7 +41,7 @@ $ ./aes-cli show
 
 Then, training models seems fairly easy:
 ```bash
-$ ./aes-cli train lstm -p 7
+$ ./essaysense-cli train lstm -p 7
 [Loading] GloVe word vectors...
 [Loading] ASAP-AES domain 7 dataset...
 [Loading] ASAP-AES domain 7 dataset...
@@ -55,7 +55,7 @@ Note that `-p` option is short for `--prompt`, identifying which prompt of the A
 
 Evaluation can be performed after the model on a specific prompt is appropriately trained:
 ```bash
-$ ./aes-cli evaluate cnn-cnn -p 2
+$ ./essaysense-cli evaluate cnn-cnn -p 2
 [Loading] GloVe word vectors...
 [Loading] ASAP-AES domain 2 dataset...
 [Loading] ASAP-AES domain 2 dataset...
@@ -64,7 +64,7 @@ $ ./aes-cli evaluate cnn-cnn -p 2
 
 This application also provides you a simple interface to access TensorBoard along with a specific trained model:
 ```bash
-$ ./aes-cli visualize cnn-cnn -p 2
+$ ./essaysense-cli visualize cnn-cnn -p 2
 [Loading] GloVe word vectors...
 [Loading] ASAP-AES domain 2 dataset...
 [Loading] ASAP-AES domain 2 dataset...
@@ -75,7 +75,7 @@ Obviously, you have to add TensorBoard to you `$PATH` enviroment so that the app
 
 Note that both evaluating and visualizing tasks demand a trained model on a single prompt. If you call a brand-new model for evaluating or visualizing, It would reporting error:
 ```bash
-$ ./aes-cli visualize lstm -p 5
+$ ./essaysense-cli visualize lstm -p 5
 [Loading] GloVe word vectors...
 [Loading] ASAP-AES domain 5 dataset...
 [Loading] ASAP-AES domain 5 dataset...

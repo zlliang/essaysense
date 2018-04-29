@@ -1,8 +1,8 @@
 import tensorflow as tf
 from tensorflow.contrib import rnn as tfrnn
 
-from aes.configs import paths
-from aes.modeltemplate import Model
+from essaysense.configs import paths
+from essaysense.modeltemplate import Model
 
 class SentenceLevelCnn(Model):
     """Hierarchical CNN model for AES task.
