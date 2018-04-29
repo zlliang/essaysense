@@ -20,7 +20,7 @@ For more information, please see README.md.
 # to create a command line interface.
 import click
 # Version tag corresponding to the main package.
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 # Version printing function.
 def print_version(ctx, param, value):

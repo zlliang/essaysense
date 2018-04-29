@@ -3,7 +3,7 @@
 Project EssaySense
 ==================
 EssaySense is an NLP project on Automated Essay Scoring, based on neural network
-tech-nologies.
+technologies.
 
 Several neural network models are included to modelling the scoring task, imple-
 mented using TensorFlow (see https://tensorflow.org). Pre-trainedmodels are also
@@ -43,7 +43,7 @@ Under MIT license
 """
 
 # This project follows SemVer 2.0 (see https://semver.org)
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 # Make datasets avaliable
 from essaysense import datasets
