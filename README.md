@@ -2,7 +2,7 @@
 
 **EssaySense** (former name: AES) is an NLP project on Automated Essay Scoring, based on neural network technologies.
 
-**Authors**: _[Zilong Liang](https://github.com/deltaquincy)_ and _[Jiancong Gao](https://github.com/jianconggao)_.
+**Authors**: _[Zilong Liang](https://github.com/zlliang)_ and _[Jiancong Gao](https://github.com/jianconggao)_.
 
 Several neural network models are included to modelling the scoring task, implemented using [TensorFlow](https://tensorflow.org). Pre-trained models are also included based on [ASAP-AES](https://www.kaggle.com/c/asap-aes/) dataset. You can use this application to score English essays, or train new models by feeding your own datasets.
 
