@@ -15,7 +15,7 @@ $ pip3 install -r requirements.txt
 
 Besides, NLTK's punctuation metadata is needed to perform sentence tokenizing task. But **do not** bother to download it manually, because this application would detect or download it automatically.
 
-For **datasets** part, this project uses `training_set_rel3.tsv` in [ASAP-AES](https://www.kaggle.com/c/asap-aes/) as essay dataset and `glove.6B.50d.txt` of [GloVe](https://github.com/stanfordnlp/GloVe) project as word embedding dataset. This project can detect or download these datasets automatically. However, they are about approximate 200MB totally, so if you mind the Internet speed, you can prepare them yourself, and put them into: `essaysense/datasets/`.
+For **datasets** part, this project uses `training_set_rel3.tsv` in [ASAP-AES](https://www.kaggle.com/c/asap-aes/) as essay dataset and `glove.6B.50d.txt` of [GloVe](https://github.com/stanfordnlp/GloVe) project as word embedding dataset. This project can detect or download these datasets automatically. However, they are about approximate 200MB totally, so if you are worried about the Internet speed, you can prepare them yourself, and put them into: `essaysense/datasets/`.
 
 ## Usage
 
