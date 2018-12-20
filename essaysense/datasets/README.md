@@ -8,6 +8,4 @@ This project uses the following datasets:
 
 [GloVe](https://github.com/stanfordnlp/GloVe) word representation resources are licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) and pre-trained embeddings are licensed under the [Public Domain Dedication and License](https://opendatacommons.org/licenses/pddl/).
 
-Due to the data size and copyright problems, we would not save the whole datasets in this repository. An automated downloader is provided . When running this application for the first time, these datasets will be automatically downloaded.
-
-Note that all of the dataset used for this project are now hosted temporarily in [Qiniu Cloud](https://qiniu.com), using a test domain name. So stability of automatic download is not garanteed. If error appears, please contact us or prepare datasets manually following instructions above.
+Due to the data size and copyright problems, we would not save the whole datasets in this repository. You need download them and put them into appropriate directories yourself.
