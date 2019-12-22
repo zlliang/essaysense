@@ -1,5 +1,11 @@
 # EssaySense
 
+---
+
+**DISCLAIMER**: This project is no longer maintained now. It is originally the final project of [DATA130006](http://www.sdspeople.fudan.edu.cn/zywei/DATA130006/) on NLP in Fudan University.
+
+---
+
 **EssaySense** (former name: AES) is an NLP project on Automated Essay Scoring, based on neural network technologies.
 
 **Authors**: _[Zilong Liang](https://github.com/zlliang)_ and _[Jiancong Gao](https://github.com/jianconggao)_.
